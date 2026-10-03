@@ -1,0 +1,113 @@
+Messaggio di avvertimento:
+il pacchetto 'data.table' è stato creato con R versione 4.3.3 
+quota di oratori noti decidibili: 70.8 %
+VERIFICA su 2500 oratori con partito noto, leg. XII-XVIII
+decidibili (>= 5 applausi esclusivi al primo gruppo e margine >= 25% sul secondo): 1770 
+il primo gruppo coincide col partito: 95.3 %
+
+accuratezza per legislatura:
+Key: <legislature>
+   legislature     n accuratezza
+         <int> <int>       <num>
+1:          12    35        80.0
+2:          13   129        91.5
+3:          14    93        98.9
+4:          15   218        95.9
+5:          16   452        92.7
+6:          17   398        96.2
+7:          18   445        98.2
+
+errori piu frequenti (partito vero -> assegnato):
+      vero assegnato     N
+    <char>    <char> <int>
+ 1:     FI       FLI    17
+ 2:    PDS        DS     8
+ 3:     PD        IV     7
+ 4:    PDS     PROGR     6
+ 5:     PD       UDC     6
+ 6:  ULIVO        SD     4
+ 7:     FI      LEGA     4
+ 8:     FI       UDC     3
+ 9:     FI       PRI     3
+10:     PD       LEU     3
+11:     PD       SEL     3
+12:  ULIVO       IDV     2
+13:     FI       PLI     2
+14:     FI        PD     2
+15:    IDV        PD     2
+
+RICODIFICA: 1383 oratori con interventi registrati come coalizione; 703 decidibili
+Key: <top>
+       top   CDL   CDX CDX/CSX   CSX  POLO PROGR ULIVO UNIONE
+    <char> <int> <int>   <int> <int> <int> <int> <int>  <int>
+ 1:     AN    44     0       0     0    77     0     0      0
+ 2:    DEM     0     0       0     0     0     0     3      0
+ 3:     DS     0     0       0     0     0     0   135      0
+ 4:    FDI     0     5       1     0     0     0     0      0
+ 5:     FI    48     9       7     0    66     0     0      0
+ 6:    IDV     0     0       0     0     0     0     1      0
+ 7:     IV     0     0       1     1     0     0     0      0
+ 8:   LEGA    22     1       0     0    16     1     2      0
+ 9:    LEU     0     0       0    14     0     0     0      0
+10:    M5S     0    13      16     1     0     0     1      0
+11:  MARGH     1     0       0     0     0     0    47      0
+12:     PD     0     1       1     3     0     0     0      0
+13:   PDCI     0     0       0     0     0     0    11      0
+14:    PPI     0     0       0     0     0     0    35      0
+15:    PRI     0     0       0     0     0     0     1      0
+16:  PROGR     0     0       0     0     0    25     0      0
+17:    PSI     0     0       1     0     0     0     1      0
+18:     RC     0     1       1     0     1    21    10      0
+19:    SDI     0     0       0     0     0     0     8      0
+20:    UDC    17     0       0     0    13     0     0      0
+21:  VERDI     0     0       0     0     0     0    18      1
+       top   CDL   CDX CDX/CSX   CSX  POLO PROGR ULIVO UNIONE
+
+eventi corretti a mano: 2357 
+
+eventi verso oratori ancora con sigla di coalizione, per legislatura (prima -> dopo):
+   legislature prima non_attribuiti
+         <int> <int>          <int>
+1:          12  5823           1591
+2:          13 12510           1273
+3:          14 21450            808
+4:          15    21              7
+5:          16    24              0
+6:          17    32              0
+7:          18  4831            446
+
+oratori con piu eventi rimasti non attribuiti:
+    legislature       target_speaker     N sigla_coal    top    n1 secondo
+          <int>               <char> <int>     <char> <char> <int>  <char>
+ 1:          13      TIZIANA PARENTI    95       POLO    SDI    11      FI
+ 2:          12       LELIO LANTELLA    62       POLO     AN     6      FI
+ 3:          18     FABIOLA BOLOGNA     42    CDX/CSX    M5S     4      IV
+ 4:          18     YANA CHIARA EHM     42        CDX    M5S    21      RC
+ 5:          18 CRISTIAN ROMANIELLO     40    CDX/CSX  VERDI    16     M5S
+ 6:          12        SILVIO LIOTTA    38       POLO     FI     4   PROGR
+ 7:          18         SARA CUNIAL     36        CDX   LEGA     4    <NA>
+ 8:          18     MARTINA PARISSE     35        CDX    FDI     1    <NA>
+ 9:          13      ERNESTO STAJANO    30      ULIVO    PPI     1    <NA>
+10:          13         GIORGIO BOGI    28      ULIVO     DS     1    <NA>
+11:          18   ARIANNA SPESSOTTO     26    CDX/CSX   <NA>    NA    <NA>
+12:          12      GIORGIO JANNONE    25       POLO     FI     4    <NA>
+13:          12       GIUSEPPE AYALA    25      PROGR  PROGR     4     DEM
+14:          12          LUIGI NEGRI    25       POLO     FI     2    <NA>
+15:          12      VALENTINA APREA    25       POLO     FI     3    <NA>
+       n2
+    <int>
+ 1:     9
+ 2:     5
+ 3:     1
+ 4:    21
+ 5:    14
+ 6:     1
+ 7:     0
+ 8:     0
+ 9:     0
+10:     0
+11:    NA
+12:     0
+13:     3
+14:     0
+15:     0

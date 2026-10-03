@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alleati e avversari</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --surface: #fcfcfb; --page: #f9f9f7; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --border: rgba(11,11,11,0.10);
+    --magg: #e4e2da; --opp: #f1f0ec; --app: #2a78d6; --ost: #eb6834;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface: #1a1a19; --page: #0d0d0d; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --border: rgba(255,255,255,0.10);
+      --magg: #34342f; --opp: #232321; --app: #3987e5; --ost: #d95926;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface: #1a1a19; --page: #0d0d0d; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --border: rgba(255,255,255,0.10);
+    --magg: #34342f; --opp: #232321; --app: #3987e5; --ost: #d95926;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .intro, .outro { max-width: 640px; margin: 0 auto; padding: 48px 16px 24px; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 12px; }
+  h2 { font-size: 1.3rem; margin: 0 0 8px; }
+  .kicker { color: var(--ink-2); }
+
+  /* scrollytelling: grafico fisso, passi che scorrono */
+  .scrolly { position: relative; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 32px;
+             max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  .steps { padding: 30vh 0 40vh; }
+  .step { margin: 0 0 70vh; padding: 18px 20px; background: var(--surface); border: 1px solid var(--border);
+          border-radius: 10px; opacity: .35; transition: opacity .3s; }
+  .step.attivo { opacity: 1; }
+  .step h2 { margin-top: 0; }
+  .sticky { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+  .fase-titolo { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .fase-titolo span { color: var(--ink-2); font-weight: 400; }
+  .citazione { margin: 14px 0 0; padding: 0 0 0 14px; border-left: 3px solid var(--grid); }
+  .citazione q { display: block; font-size: 1.05rem; }
+  .citazione .annot { display: block; color: var(--ink-2); font-style: italic; font-size: .9rem; margin-top: 6px; }
+  .citazione .fonte { display: block; color: var(--muted); font-size: .8rem; margin-top: 4px; }
+  @media (max-width: 760px) {
+    .scrolly { display: block; }
+    .sticky { height: 62vh; top: 0; z-index: 1; background: var(--page); padding-top: 8px; }
+    .steps { position: relative; z-index: 2; padding-top: 4vh; }
+    .step { margin-bottom: 80vh; opacity: .96; }
+  }
+
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .lab { fill: var(--ink-2); font-size: 12px; }
+  .lab.on { fill: var(--ink); font-weight: 700; }
+  .assi { color: var(--muted); font-size: 13px; margin: 2px 0 4px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+  .sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; border: 1px solid var(--border); }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: 0; margin-right: 5px; }
+  .tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+         border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.4; box-shadow: 0 4px 16px rgba(0,0,0,.12);
+         max-width: 260px; opacity: 0; z-index: 10; }
+  .tip strong { font-variant-numeric: tabular-nums; }
+  .tip .k { color: var(--ink-2); }
+  .controlli { display: none; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; font-size: 14px; }
+  .esplora .controlli { display: flex; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .seg button { border: 0; background: transparent; color: var(--ink-2); padding: 5px 10px; font: inherit; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--grid); color: var(--ink); font-weight: 600; }
+  .controlli input[type=range] { flex: 1; min-width: 140px; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--app); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="intro">
+  <p class="kicker">àlea · prototipo dello scrollytelling</p>
+  <h1>Alleati che litigano, avversari che si applaudono</h1>
+  <p>Ogni volta che un deputato parla, i resoconti stenografici annotano chi applaude, chi protesta, chi interrompe. Messe in fila, quelle annotazioni dicono chi sta con chi. E anche quando la regola si rompe.</p>
+</header>
+
+<div class="scrolly">
+  <div class="steps">
+    <section class="step" data-fase="8" data-mode="app" data-hi="">
+      <h2>Come si legge</h2>
+      <p>Ogni riga è un partito che reagisce, ogni colonna un partito che parla. Il pallino è tanto più grande quanto più spesso il partito della riga reagisce agli interventi di quello della colonna.</p>
+      <p>Lo sfondo dice da che parte stanno: <b>grigio scuro</b> se sono entrambi in maggioranza, <b>grigio chiaro</b> se sono entrambi all'opposizione.</p>
+    </section>
+    <section class="step" data-fase="8" data-mode="app" data-hi="DC>DC,PCI>PCI,PSI>PSI,MSI>MSI,MON>MON">
+      <h2>La regola</h2>
+      <p>Si applaude soprattutto il proprio partito. Negli anni del centrismo, tra il 1954 e il 1957, la DC applaude più di metà degli interventi dei suoi deputati (54%). Gli applausi lungo la diagonale sono quasi tutto.</p>
+    </section>
+    <section class="step" data-fase="8" data-mode="ost" data-hi="DC>PCI,PCI>DC,DC>MSI">
+      <h2>E l'ostilità segue il confine</h2>
+      <p>Proteste, rumori e interruzioni corrono tra maggioranza e opposizione. Il PCI reagisce con ostilità al 37% degli interventi democristiani, la DC al 20% di quelli comunisti.</p>
+    </section>
+
+    <section class="step" data-fase="48" data-mode="ost" data-hi="FI>LEGA,AN>LEGA">
+      <h2>1 · Alleati che litigano</h2>
+      <p>A volte il confine passa dentro la maggioranza. Nel primo governo Berlusconi, Forza Italia e Alleanza nazionale reagiscono con ostilità a un intervento leghista su nove. Nel dicembre 1994 sarà la Lega a far cadere il governo.</p>
+    </section>
+    <section class="step" data-fase="55" data-mode="ost" data-hi="FI>LEGA,LEGA>FI">
+      <h2>Le eccezioni</h2>
+      <p>Dentro la Casa delle libertà, tra il 2001 e il 2006, l'ostilità tra alleati torna sotto l'1%. Ma non sparisce.</p>
+      <blockquote class="citazione">
+        <q>Abbiamo addirittura i colleghi della Casa delle libertà e di Forza Italia che dicono: siamo stanchi di sentire la Lega…</q>
+        <span class="annot">(Una voce dai banchi del gruppo di Forza Italia: «È vero!»)</span>
+        <q>È vero? Sì? Allora, alzati e dillo, però, invece di essere sordo e muto!</q>
+        <span class="fonte">Alessandro Cè (Lega), 10 luglio 2003</span>
+      </blockquote>
+    </section>
+    <section class="step" data-fase="66" data-mode="app" data-hi="M5S>LEGA,LEGA>M5S">
+      <p>Gli stessi due partiti possono passare dagli applausi al silenzio. Nel governo gialloverde il Movimento 5 Stelle applaude il 26% degli interventi leghisti, la Lega il 12% di quelli grillini.</p>
+    </section>
+    <section class="step" data-fase="68" data-mode="app" data-hi="M5S>LEGA,LEGA>M5S">
+      <p>Con il governo Draghi, di nuovo alleati, scendono sotto lo 0,5%. Quando si incrociano, è per litigare.</p>
+      <blockquote class="citazione">
+        <q>Ben venga per noi, Presidente, se il signor Matteo Salvini, che strizzava l'occhio ad Orbán […] adesso abbia improvvisamente cambiato idea…</q>
+        <span class="annot">(Dai banchi del gruppo Lega-Salvini Premier si grida: Basta!)</span>
+        <span class="fonte">Filippo Scerra (M5S), 24 marzo 2021</span>
+      </blockquote>
+    </section>
+
+    <section class="step" data-fase="31" data-mode="ost" data-hi="PCI>RAD,DC>RAD">
+      <h2>2 · Applausi che sono fischi</h2>
+      <p>Nella solidarietà nazionale, con il PCI in maggioranza, il bersaglio comune sono i radicali: il PCI reagisce con ostilità al 44% dei loro interventi, la DC al 17%. Ad aprile 1978, mentre si vota la legge sull'aborto, i radicali fanno ostruzionismo sugli emendamenti.</p>
+      <blockquote class="citazione">
+        <q>Signor Presidente, in questo momento ho un solo modo per rispettare il suo modo di presiedere: smettere di parlare.</q>
+        <span class="annot">(Prolungati applausi al centro, a sinistra e all'estrema sinistra)</span>
+        <span class="fonte">Marco Pannella (Radicali), 13 aprile 1978</span>
+      </blockquote>
+      <p>Nel resoconto sono applausi. In aula erano un modo per zittirlo.</p>
+    </section>
+
+    <section class="step" data-fase="31" data-mode="app" data-hi="DC>PCI,PCI>DC">
+      <h2>3 · Avversari che si applaudono</h2>
+      <p>È anche uno dei rari momenti in cui democristiani e comunisti applaudono insieme. Per il resto, perfino da alleati di governo, la DC applaude il 2% degli interventi comunisti e il PCI il 2% di quelli democristiani.</p>
+    </section>
+
+    <section class="step esplora-step" data-fase="68" data-mode="entrambe" data-hi="" data-esplora="1">
+      <h2>Esplora</h2>
+      <p>Ora scegli tu la fase politica e il tipo di reazione, sopra il grafico. Passa il mouse su un pallino per i numeri.</p>
+    </section>
+  </div>
+
+  <div class="sticky" id="sticky">
+    <div class="controlli">
+      <div class="seg" role="group" aria-label="Tipo di reazione">
+        <button data-mode="app">Applausi</button><button data-mode="ost">Ostilità</button><button data-mode="entrambe">Entrambe</button>
+      </div>
+      <input type="range" id="fase" min="0" value="0" aria-label="Fase politica">
+    </div>
+    <div class="fase-titolo" id="titolo"></div>
+    <div class="assi">righe: chi reagisce · colonne: chi parla</div>
+    <svg id="chart" role="img" aria-labelledby="titolo"></svg>
+    <div class="legend">
+      <span><span class="dot" style="background: var(--app)"></span>applausi</span>
+      <span><span class="dot" style="background: var(--ost)"></span>ostilità</span>
+      <span><span class="sw" style="background: var(--magg)"></span>entrambi in maggioranza</span>
+      <span><span class="sw" style="background: var(--opp)"></span>entrambi all'opposizione</span>
+    </div>
+  </div>
+</div>
+
+<footer class="outro">
+  <p class="kicker">Note: quota degli interventi del partito in colonna che hanno ricevuto almeno una reazione del partito in riga. Esclusi gli interventi con oratore di attribuzione dubbia. Fino al 1987 molte reazioni sono annotate per settore dell'aula ("estrema sinistra", "centro") e attribuite ai partiti che vi sedevano; nelle legislature II e III il settore "sinistra" vale sia per il PCI sia per il PSI. Partiti mostrati se hanno almeno 40 interventi con reazioni e 20 reazioni nella fase.</p>
+</footer>
+<div class="tip" id="tip" role="status"></div>
+
+<script>
+const DATI = /*__DATI__*/null;
+const svg = d3.select("#chart");
+const tip = d3.select("#tip");
+const pct = v => (v * 100).toLocaleString("it-IT", { maximumFractionDigits: v < 0.1 ? 1 : 0 }) + "%";
+let stato = { i: 0, mode: "app", hi: [] };
+// niente animazioni con "riduci movimento" o con ?statico nell'indirizzo (anteprime)
+const DURATA = matchMedia("(prefers-reduced-motion: reduce)").matches || location.search.includes("statico") ? 0 : 600;
+
+function disegna() {
+  const F = DATI[stato.i];
+  const P = F.partiti, n = P.length;
+  const M = 64, cell = Math.min(52, Math.floor(560 / n)), W = M + n * cell + 8, H = M + n * cell + 8;
+  svg.attr("viewBox", `0 0 ${W} ${H}`);
+  d3.select("#titolo").html("").append("span").text(`${F.numero} legislatura · `);
+  d3.select("#titolo").append("b").text(F.governi);
+  d3.select("#titolo").append("span").text(` · ${F.anni}`);
+
+  const idx = new Map(P.map((p, i) => [p.sigla, i]));
+  const campo = new Map(P.map(p => [p.sigla, p.campo]));
+  const cells = [];
+  P.forEach(r => P.forEach(c => {
+    const d = F.celle.find(x => x.chi === r.sigla && x.a_chi === c.sigla) || { q_app: 0, q_ost: 0, app: 0, ost: 0, n: c.interventi };
+    const cr = campo.get(r.sigla), cc = campo.get(c.sigla);
+    cells.push({ ...d, chi: r.sigla, a_chi: c.sigla, key: r.sigla + ">" + c.sigla,
+                 sfondo: cr === cc && cr === "maggioranza" ? "var(--magg)" : cr === cc && cr === "opposizione" ? "var(--opp)" : "transparent" });
+  }));
+  const hi = new Set(stato.hi);
+  const evid = d => !hi.size || hi.has(d.key);
+  const rad = q => Math.sqrt(Math.min(q, 1)) * cell * 0.48;   // area proporzionale alla quota
+  const x = s => M + idx.get(s) * cell, y = s => M + idx.get(s) * cell;
+  const t = svg.transition().duration(DURATA);
+
+  // celle
+  const g = svg.selectAll("g.cella").data(cells, d => d.key);
+  const ge = g.enter().append("g").attr("class", "cella").attr("transform", d => `translate(${x(d.a_chi)},${y(d.chi)})`).style("opacity", 0);
+  ge.append("rect").attr("class", "bg").attr("x", 1).attr("y", 1).attr("rx", 3);
+  ge.append("path").attr("class", "a");
+  ge.append("path").attr("class", "o");
+  ge.append("rect").attr("class", "hit").attr("fill", "transparent");
+  g.exit().transition(t).style("opacity", 0).remove();
+  const gm = ge.merge(g);
+  gm.on("pointermove", (e, d) => mostra(e, F, d)).on("pointerleave", () => tip.style("opacity", 0));
+  gm.transition(t).attr("transform", d => `translate(${x(d.a_chi)},${y(d.chi)})`).style("opacity", d => evid(d) ? 1 : 0.18);
+  gm.select("rect.bg").transition(t).attr("width", cell - 2).attr("height", cell - 2).attr("fill", d => d.sfondo)
+    .attr("stroke", d => d.chi === d.a_chi ? "var(--grid)" : "none");
+  gm.select("rect.hit").attr("width", cell).attr("height", cell);
+  const c0 = cell / 2;
+  // applausi: cerchio intero o metà sinistra; ostilità: cerchio intero o metà destra
+  const arco = (r, da, a) => d3.arc()({ innerRadius: 0, outerRadius: r, startAngle: da, endAngle: a });
+  gm.select("path.a").attr("transform", `translate(${c0},${c0})`).attr("fill", "var(--app)").transition(t)
+    .attr("d", d => stato.mode === "ost" ? arco(0, 0, 2 * Math.PI) : stato.mode === "app" ? arco(rad(d.q_app), 0, 2 * Math.PI) : arco(rad(d.q_app), Math.PI, 2 * Math.PI));
+  gm.select("path.o").attr("transform", `translate(${c0},${c0})`).attr("fill", "var(--ost)").transition(t)
+    .attr("d", d => stato.mode === "app" ? arco(0, 0, 2 * Math.PI) : stato.mode === "ost" ? arco(rad(d.q_ost), 0, 2 * Math.PI) : arco(rad(d.q_ost), 0, Math.PI));
+
+  // etichette
+  const onSet = new Set([...hi].flatMap(k => k.split(">")));
+  // le etichette nuove nascono già al loro posto, poi si spostano con le altre
+  const posRiga = d => [M - 8, y(d.sigla) + cell / 2 + 4];
+  const posCol = d => `translate(${x(d.sigla) + cell / 2 + 4},${M - 8}) rotate(-50)`;
+  svg.selectAll("text.riga").data(P, d => d.sigla)
+    .join(en => en.append("text").attr("x", d => posRiga(d)[0]).attr("y", d => posRiga(d)[1]))
+    .attr("class", d => "lab riga" + (onSet.has(d.sigla) ? " on" : "")).attr("text-anchor", "end").text(d => d.sigla)
+    .transition(t).attr("x", d => posRiga(d)[0]).attr("y", d => posRiga(d)[1]);
+  svg.selectAll("text.col").data(P, d => d.sigla)
+    .join(en => en.append("text").attr("transform", posCol))
+    .attr("class", d => "lab col" + (onSet.has(d.sigla) ? " on" : "")).attr("text-anchor", "start").text(d => d.sigla)
+    .transition(t).attr("transform", posCol);
+}
+
+function mostra(e, F, d) {
+  const nome = s => F.partiti.find(p => p.sigla === s).nome;
+  tip.html("");
+  tip.append("div").text(`${nome(d.chi)} → ${nome(d.a_chi)}`);
+  tip.append("div").html("").append("strong").text(`applausi ${pct(d.q_app)} · ostilità ${pct(d.q_ost)}`);
+  tip.append("div").attr("class", "k").text(`degli interventi di ${d.a_chi} con reazioni (${d.n})`);
+  const tw = 270, xx = e.clientX + 14 + tw > innerWidth ? e.clientX - tw - 10 : e.clientX + 14;
+  tip.style("left", xx + "px").style("top", (e.clientY + 14) + "px").style("opacity", 1);
+}
+
+// ---- passi dello scrollytelling
+const fasePos = new Map(DATI.map((f, i) => [f.fase, i]));
+const steps = document.querySelectorAll(".step");
+function attiva(el) {
+  steps.forEach(s => s.classList.toggle("attivo", s === el));
+  stato.i = fasePos.get(+el.dataset.fase) ?? stato.i;
+  stato.mode = el.dataset.mode;
+  stato.hi = el.dataset.hi ? el.dataset.hi.split(",") : [];
+  document.getElementById("sticky").classList.toggle("esplora", !!el.dataset.esplora);
+  sincronizza(); disegna();
+}
+const obs = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && attiva(e.target)),
+                                     { rootMargin: "-45% 0px -45% 0px" });
+steps.forEach(s => obs.observe(s));
+
+// ---- esplorazione libera
+const slider = document.getElementById("fase");
+slider.max = DATI.length - 1;
+slider.addEventListener("input", () => { stato.i = +slider.value; stato.hi = []; disegna(); });
+d3.selectAll(".controlli .seg button").on("click", function () { stato.mode = this.dataset.mode; sincronizza(); disegna(); });
+function sincronizza() {
+  slider.value = stato.i;
+  d3.selectAll(".controlli .seg button").attr("aria-pressed", function () { return this.dataset.mode === stato.mode; });
+}
+// #step=N apre la pagina a un passo (utile per i link e le anteprime)
+const h = +(new URLSearchParams(location.hash.slice(1)).get("step") || 0);
+if (h > 0 && h <= steps.length) { steps[h - 1].scrollIntoView({ block: "center" }); attiva(steps[h - 1]); }
+else attiva(steps[0]);
+// #fase=31&mode=ost&hi=PCI>RAD disegna uno stato preciso senza scorrere (anteprime)
+const hp = new URLSearchParams(location.hash.slice(1));
+if (hp.get("fase")) {
+  obs.disconnect();
+  stato.i = fasePos.get(+hp.get("fase")) ?? 0;
+  stato.mode = hp.get("mode") || "app";
+  stato.hi = hp.get("hi") ? hp.get("hi").split(",") : [];
+  disegna();
+}
+</script>
+</body>
+</html>

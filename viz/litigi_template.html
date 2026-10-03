@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Litigi tra alleati</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,800&family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --surface: #fcfcfb; --page: #f9f9f7; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --border: rgba(11,11,11,0.10);
+    --band-a: #efeee9; --band-b: #f7f6f2; --ost: #eb6834; --ost-soft: rgba(235,104,52,0.35);
+    --magg: #6f6e69; --opp: #e1e0d9;
+    --pen: rgba(255, 214, 10, 0.55);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface: #1a1a19; --page: #0d0d0d; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --border: rgba(255,255,255,0.10);
+      --band-a: #22221f; --band-b: #181816; --ost: #d95926; --ost-soft: rgba(217,89,38,0.40);
+    --magg: #a9a89f; --opp: #3a3a37;
+    --pen: rgba(255, 200, 0, 0.32);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface: #1a1a19; --page: #0d0d0d; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --border: rgba(255,255,255,0.10);
+    --band-a: #22221f; --band-b: #181816; --ost: #d95926; --ost-soft: rgba(217,89,38,0.40);
+    --magg: #a9a89f; --opp: #3a3a37;
+    --pen: rgba(255, 200, 0, 0.32);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .intro, .outro { max-width: 680px; margin: 0 auto; padding: 48px 16px 8px; }
+  .apertura { max-width: 680px; margin: 0 auto; padding: 64px 16px 0; }
+  .apertura p { margin: 0 0 1.1em; }
+  h1 { font-family: "Fraunces", Georgia, serif; font-weight: 800; font-size: clamp(2.6rem, 9vw, 4.6rem); line-height: 1.05; letter-spacing: -0.02em; margin: 24px 0 28px; text-wrap: balance; }
+  /* "alleati" in un blocco pieno, "litigi" nel colore dei litigi con una sottolineatura a zigzag */
+  .t-alleati { display: inline-block; background: var(--ink); color: var(--page); padding: 0 .14em .06em; border-radius: .08em; transform: rotate(-2deg); }
+  .t-litigano { display: inline-block; position: relative; color: var(--ost); }
+  .t-litigano::after { content: ""; position: absolute; left: .02em; right: .02em; bottom: -.1em; height: .2em;
+    background: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 20 8%27%3E%3Cpath d=%27M0 6 L5 2 L10 6 L15 2 L20 6%27 fill=%27none%27 stroke=%27%23eb6834%27 stroke-width=%272.4%27/%3E%3C/svg%3E") repeat-x 0 0 / .4em 100%; }
+  /* una scossa sola all'arrivo, come un battibecco */
+  @media (prefers-reduced-motion: no-preference) {
+    .t-litigano { animation: scossa .5s ease-in-out .6s 2; }
+    @keyframes scossa { 0%, 100% { transform: none; } 20% { transform: translateX(-.03em) rotate(-2deg); } 40% { transform: translateX(.03em) rotate(2deg); }
+                        60% { transform: translateX(-.02em) rotate(-1deg); } 80% { transform: translateX(.02em) rotate(1deg); } }
+  }
+  .kicker { color: var(--ink-2); font-size: .95rem; }
+
+  /* timeline completa: all'inizio (scorre via) e di nuovo alla fine */
+  .tl { padding: 24px 16px 4px; }
+  .tl-in { max-width: 1100px; margin: 0 auto; }
+  .tl-head { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--ink-2); flex-wrap: wrap; }
+  .tl-head b { color: var(--ink); }
+  .tl svg { display: block; width: 100%; height: 150px; }
+  .asse text { fill: var(--muted); font-size: 11px; }
+  .asse line, .asse path { stroke: var(--grid); }
+  .gov-lab { fill: var(--ink-2); font-size: 11px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); padding: 2px 0 4px; }
+  .pt { display: inline-block; width: 9px; height: 9px; border-radius: 50%; vertical-align: 0; margin-right: 5px; }
+
+  /* scene */
+  .ponte { max-width: 680px; margin: 0 auto; padding: 32px 16px 8px; color: var(--ink-2); }
+  .scene { max-width: 1100px; margin: 0 auto; padding: 0 16px 6vh; }
+  /* emiciclo fisso in alto per tutta la durata delle scene */
+  /* emiciclo al centro, didascalia e legenda di lato; niente bordo: sfuma nella pagina */
+  .aula { position: sticky; top: 0; z-index: 5; background: var(--page); padding: 10px 16px 4px; }
+  .aula-in { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); align-items: center; gap: 28px; }
+  .aula svg { grid-column: 2; display: block; width: 460px; height: auto; overflow: visible; }
+  .aula-txt { grid-column: 3; max-width: 260px; }
+  .aula-tit { font-weight: 700; font-size: .95rem; }
+  .aula-sub { color: var(--ink-2); font-size: .85rem; }
+  .aula .legend { flex-direction: column; gap: 2px; margin-top: 6px; }
+  .emi-lab { font-size: 11px; fill: var(--ink-2); }
+  .emi-lab.lite { fill: var(--ost); font-weight: 700; }
+  .sq { display: inline-block; width: 9px; height: 9px; border-radius: 50%; vertical-align: 0; margin-right: 5px; }
+  .al-governo { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 16px; font-size: .85rem; color: var(--ink-2); }
+  .chip { border: 1px solid var(--border); border-radius: 999px; padding: 1px 9px; background: var(--surface); color: var(--ink); font-weight: 600; font-size: .8rem; }
+  .chip.lite { background: var(--ost); border-color: transparent; color: #fff; }
+  /* accanto a ogni scena: la timeline del suo governo, girata in verticale */
+  .mini-cap { font-size: 12px; color: var(--ink-2); margin-bottom: 4px; }
+  .mini-cap b { color: var(--ink); }
+  .mini svg { display: block; width: 100%; height: 460px; }
+  .scena { scroll-margin-top: 250px; min-height: 85vh; display: grid; grid-template-columns: minmax(0,1fr) 230px; gap: 48px; align-items: center; padding: 40px 0; }
+  @media (max-width: 899px) {
+    .scena { grid-template-columns: minmax(0,1fr); gap: 20px; }
+    .mini svg { height: 120px; }
+    .aula-in { grid-template-columns: minmax(0,1fr); gap: 2px; justify-items: center; text-align: center; }
+    .aula svg, .aula-txt { grid-column: 1; max-width: none; }
+    .aula svg { width: min(380px, 100%); }
+    .aula .legend { flex-direction: row; justify-content: center; gap: 2px 10px; margin-top: 2px; }
+  }
+  @media (max-width: 640px) {
+    .aula { padding: 6px 12px 2px; }
+    .aula-tit { font-size: .8rem; }
+    .aula-sub { font-size: .72rem; line-height: 1.3; }
+    .aula svg { width: min(300px, 100%); }
+    .aula .legend { font-size: 10.5px; gap: 2px 8px; }
+  }
+  /* passi senza scena (Camera del 1948 e di oggi): solo testo */
+  /* passi senza scena: paragrafi in colonna centrata, sotto l'emiciclo */
+  .passo { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; scroll-margin-top: 250px; }
+  .passo p { width: 100%; max-width: 680px; margin: 0 0 1.1em; font-size: 1.1rem; }
+  .zoom { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin: 6px 0 2px; }
+  .zoom button { font: inherit; font-weight: 600; min-width: 30px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border);
+                 background: var(--surface); color: var(--ink); cursor: pointer; }
+  .zoom button:disabled { opacity: .4; cursor: default; }
+  #zoom-stato { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  /* ---- scene come dialogo: battuta dell'oratore, reazione dell'aula dal resoconto */
+  .scena .data { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .75rem; font-weight: 600; letter-spacing: .08em;
+                 text-transform: uppercase; color: var(--ost); }
+  .scena h2 { font-family: "Fraunces", Georgia, serif; font-weight: 800; font-size: clamp(1.9rem, 4.4vw, 2.7rem); line-height: 1.05;
+              letter-spacing: -.015em; margin: 8px 0 14px; }
+  .contesto { color: var(--ink-2); max-width: 620px; margin: 0 0 28px; font-size: 1.05rem; }
+  .dialogo { display: flex; flex-direction: column; gap: 18px; margin-bottom: 18px; }
+  .battuta { display: grid; grid-template-columns: 112px minmax(0,1fr); gap: 18px; align-items: end; }
+  .battuta.reazione { grid-template-columns: minmax(0,1fr) 112px; }
+  .chi { text-align: center; font-size: .78rem; line-height: 1.25; }
+  .chi .nome { font-weight: 700; font-size: .85rem; margin-top: 8px; }
+  .chi .ruolo { color: var(--ink-2); }
+  .ritratti { display: flex; justify-content: center; }
+  .ritratto { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; object-position: 50% 22%; flex: none;
+              filter: grayscale(1) contrast(1.05); border: 2px solid var(--ink); background: var(--surface); }
+  .ritratto.gruppo { display: grid; place-items: center; color: var(--ink); font-weight: 700; font-size: 14px; filter: none; padding: 6px; }
+  .ritratto.logo { object-fit: contain; object-position: center; background: #fff; padding: 12px; filter: none; }
+  /* più gruppi: cerchi più piccoli, sovrapposti */
+  .ritratti.molti .ritratto { width: 62px; height: 62px; padding: 7px; }
+  .ritratti.molti .ritratto + .ritratto { margin-left: -16px; }
+  .fumetto { position: relative; background: var(--surface); border: 2px solid var(--ink); border-radius: 20px 20px 20px 4px;
+             padding: 18px 22px; box-shadow: 5px 5px 0 var(--ink); max-width: 640px; }
+  .fumetto q { display: block; font-family: "Fraunces", Georgia, serif; font-size: 1.32rem; line-height: 1.38; font-weight: 500; quotes: "«" "»"; }
+  .reazione .fumetto { justify-self: end; background: var(--ost); border-color: var(--ink); color: #fff; border-radius: 20px 20px 4px 20px; }
+  .fumetto .sten { display: block; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .66rem; font-weight: 600;
+                   letter-spacing: .12em; text-transform: uppercase; opacity: .85; margin-bottom: 6px; }
+  .fumetto .reaz { font-family: "IBM Plex Mono", ui-monospace, monospace; font-style: italic; font-size: 1.02rem; line-height: 1.5; }
+  .battuta.segue .fumetto { grid-column: 2; }
+  /* le battute entrano una dopo l'altra quando la scena arriva sullo schermo */
+  .anima .battuta { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+  .anima.vista .battuta { opacity: 1; transform: none; }
+  .anima.vista .battuta:nth-child(2) { transition-delay: .55s; }
+  .anima.vista .battuta:nth-child(3) { transition-delay: 1.1s; }
+  /* evidenziatore: si stende da sinistra quando il testo entra nello schermo */
+  mark.pennarello { color: inherit; padding: 0 .12em; margin: 0 -.06em; border-radius: .25em .6em .3em .5em;
+    background: linear-gradient(100deg, transparent .5%, var(--pen) 2%, var(--pen) 97%, transparent 99.5%) no-repeat 0 62% / 0% 80%;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size 1s cubic-bezier(.3,.7,.3,1); }
+  mark.pennarello.acceso { background-size: 100% 80%; }
+  .crediti { color: var(--muted); font-size: .75rem; margin-top: 14px; }
+  .crediti a { color: inherit; }
+  @media (max-width: 640px) {
+    .tl svg { height: 110px; }
+    .battuta { grid-template-columns: 64px minmax(0,1fr); gap: 10px; }
+    .battuta.reazione { grid-template-columns: minmax(0,1fr) 64px; }
+    .ritratto { width: 60px; height: 60px; }
+    .ritratto.logo { padding: 7px; }
+    .ritratti.molti { flex-direction: column; align-items: center; }
+    .ritratti.molti .ritratto { width: 46px; height: 46px; padding: 5px; }
+    .ritratti.molti .ritratto + .ritratto { margin: -10px 0 0; }
+    .chi { font-size: .7rem; }
+    .chi .nome { font-size: .75rem; }
+    .fumetto { padding: 13px 15px; box-shadow: 4px 4px 0 var(--ink); }
+    .fumetto q { font-size: 1.08rem; }
+    .fumetto .reaz { font-size: .9rem; }
+  }
+  .tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+         border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.4; box-shadow: 0 4px 16px rgba(0,0,0,.12);
+         max-width: 300px; opacity: 0; z-index: 20; }
+  .tip .k { color: var(--ink-2); }
+</style>
+</head>
+<body>
+
+<!-- apertura: solo testo, prima del titolo -->
+<section class="apertura">
+  <p>La storia della Repubblica italiana è caratterizzata da una <mark class="pennarello">forte instabilità degli esecutivi</mark>: in media, un governo dura poco più di un anno. L'attuale esecutivo in carica, guidato da Giorgia Meloni, si attesta come il più duraturo, avendo superato i 1412 giorni di Silvio Berlusconi, mentre, al lato opposto, c'è Amintore Fanfani che fu alla carica di un governo durato 11 giorni.</p>
+  <p>Alla base di molte crisi di governo c'è la <mark class="pennarello">frammentazione partitica</mark>: un numero elevato di partiti costringe a formare coalizioni complesse e fragili, che non sempre riescono a reggere il peso del potere. Correnti interne e distanze ideologiche tra gli alleati aprono crepe nella maggioranza, finché l'alleanza non si rompe e il governo cade.</p>
+  <p>Partendo da queste informazioni, mi sono posto una domanda: in Italia <mark class="pennarello">gli alleati di governo vanno d'accordo?</mark></p>
+</section>
+
+<header class="intro">
+  <h1>I <span class="t-litigano">litigi</span> tra gli <span class="t-alleati">alleati</span> di governo</h1>
+  <p>Governano insieme, votano insieme la fiducia. E poi, in aula, si contestano. I resoconti stenografici della Camera, dal 1948 al 2022, registrano <span id="n-litigi">1.047</span> volte in cui un partito della maggioranza ha protestato, rumoreggiato o interrotto un proprio alleato.</p>
+</header>
+
+<div class="tl" id="tl-inizio" aria-label="Timeline dei litigi tra alleati, 1948-2022">
+  <div class="tl-in">
+    <div class="tl-head"><span><b>1948–2022</b> · tutti i governi</span><span class="tl-conta"></span></div>
+    <svg></svg>
+  </div>
+</div>
+
+<p class="ponte">Ogni pallino è uno di questi momenti. Eccone alcuni tra i più netti, governo per governo: in alto, com'era composta la Camera in quel momento e chi governava insieme.</p>
+
+<div class="storia">
+  <div class="aula" id="aula" aria-label="Composizione della Camera">
+    <div class="aula-in">
+      <svg id="aula-svg"></svg>
+      <div class="aula-txt">
+        <div class="aula-tit" id="aula-tit"></div>
+        <div class="aula-sub" id="aula-sub"></div>
+        <div class="legend">
+          <span id="leg-lite"><span class="sq" style="background: var(--ost)"></span>i partiti in lite</span>
+          <span><span class="sq" style="background: var(--magg)"></span><span id="leg-magg">il resto della maggioranza</span></span>
+          <span><span class="sq" style="background: var(--opp)"></span>opposizione e misto</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <main class="scene" id="scene"></main>
+</div>
+
+<div class="tl" id="tl-fine" aria-label="Timeline completa dei litigi tra alleati">
+  <div class="tl-in">
+    <div class="tl-head"><span><b>Tutti i litigi tra alleati</b> · 1948–2022</span><span class="tl-conta"></span></div>
+    <div class="zoom">
+      <button type="button" id="zoom-piu" aria-label="Ingrandisci">+</button>
+      <button type="button" id="zoom-meno" aria-label="Riduci">−</button>
+      <button type="button" id="zoom-tutto" disabled>Tutto</button>
+      <span id="zoom-stato"></span>
+      <span>trascina per spostarti nel tempo · ctrl + rotella o due dita per ingrandire</span>
+    </div>
+    <svg></svg>
+  </div>
+</div>
+
+<footer class="outro">
+  <p class="kicker">Ogni pallino è una reazione ostile (proteste, commenti, rumori, interruzioni, grida, apostrofi) di un partito della maggioranza durante l'intervento di un alleato, esclusi gli interventi con oratore di attribuzione dubbia e le reazioni a cui partecipa anche il partito dell'oratore. Fino agli anni Ottanta molte reazioni sono annotate solo per settore dell'aula («proteste al centro», «rumori a sinistra») e il partito che reagisce è dedotto dal settore: è il caso di <span id="n-settore"></span> litigi su <span id="n-tot"></span>, la cui attribuzione è più incerta di quella dei litigi in cui il resoconto nomina un gruppo o un deputato. La densità dei pallini dipende anche da come gli stenografi annotavano le reazioni, che cambia nel tempo. Foto e loghi da Wikimedia Commons: le foto sono ritagliate e convertite in bianco e nero; i loghi compaiono quando a reagire è un gruppo e non un singolo deputato. Autori e licenze sotto ogni scena.</p>
+</footer>
+<div class="tip" id="tip" role="status"></div>
+
+<script>
+const DATI = /*__DATI__*/null;
+const FOTO = /*__FOTO__*/null;
+const LOGHI = /*__LOGHI__*/null;
+
+// ---------------------------------------------------------------- scene (contenuto editoriale)
+const SCENE = [
+  { data: "1958-03-14", oratore: "Roberti", governo: "Zoli", titolo: "L'alleato che se ne va",
+    contesto: "Il monocolore di Adone Zoli si regge anche sui voti del Movimento sociale. A fine legislatura si vota una legge che l'MSI considera una sanzione contro di sé.",
+    lite: ["MSI", "DC"],
+    sx: [{ foto: "Giovanni Roberti", nome: "Giovanni Roberti", ruolo: "MSI, appoggio esterno al governo" }],
+    dx: [{ logo: "DC_1943", gruppo: "DC", nome: "Democrazia cristiana", ruolo: "e sinistra" }],
+    q: "Noi non accettiamo questo provvedimento di ==sanzione fazioso e partigiano==",
+    annot: "(Vivissime proteste a sinistra e al centro)",
+    seguito: "e pertanto, in segno di protesta, ==abbandoneremo l'aula== di un Parlamento che non è più il Parlamento italiano, ma un Parlamento di parte." },
+  { data: "1970-11-17", oratore: "Castelli", governo: "Colombo", titolo: "Il divorzio divide la maggioranza",
+    contesto: "Il centro-sinistra governa unito, ma sul divorzio si spacca: il socialista Loris Fortuna è il primo firmatario della legge, il democristiano Angelo Castelli la combatte.",
+    lite: ["DC", "PSI"],
+// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
+    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    sx: [{ foto: "Angelo Castelli", nome: "Angelo Castelli", ruolo: "DC" }],
+    dx: [{ foto: "Loris Fortuna", nome: "Loris Fortuna", ruolo: "PSI" }],
+    q: "Onorevole Fortuna, non è legittimo che lei in quest'aula adoperi i linguaggi ovattati e fuori operi ==contro la libertà del Parlamento==.",
+    annot: "(Proteste del deputato Fortuna)" },
+  { data: "1971-07-15", oratore: "Frasca", governo: "Colombo", titolo: "Reggio Calabria",
+    contesto: "Dopo la rivolta di Reggio Calabria, il socialista Salvatore Frasca accusa la DC calabrese, alleata di governo, di connivenza con la destra monarchica e fascista.",
+    lite: ["PSI", "DC"],
+// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
+    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    sx: [{ foto: "Salvatore Frasca", nome: "Salvatore Frasca", ruolo: "PSI" }],
+    dx: [{ logo: "DC_1968", gruppo: "DC", nome: "Democrazia cristiana", ruolo: "" }],
+    q: "Ma sia anche chiaro che, se profonde sono le responsabilità dei pubblici poteri, egualmente forti sono ==le responsabilità della democrazia cristiana calabrese==.",
+    annot: "(Vive proteste al centro)" },
+  { data: "1994-07-21", oratore: "Castellaneta", governo: "Berlusconi I", titolo: "«Berlusca, state zitti!»",
+    contesto: "Due mesi dopo la nascita del primo governo Berlusconi, un deputato leghista ricorda agli alleati di Forza Italia da dove vengono.",
+    lite: ["LEGA", "FI"],
+// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
+    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    sx: [{ foto: "Sergio Castellaneta", nome: "Sergio Castellaneta", ruolo: "Lega Nord" }],
+    dx: [{ logo: "FI_1994", gruppo: "FI", nome: "Forza Italia", ruolo: "il partito di Berlusconi" }],
+    q: "Quando noi eravamo nelle piazze, e facevamo propaganda contro i ladri di Stato a favore di mani pulite, voi eravate nei salotti di Berlusconi, ==complice di quel regime di ladri==.",
+    annot: "(Vivissime proteste dei deputati del gruppo di Forza Italia)",
+    seguito: "State zitti! ==Berlusca, state zitti!==" },
+  { data: "1994-12-21", oratore: "Bossi", governo: "Berlusconi I", titolo: "La Lega toglie la fiducia",
+    contesto: "Cinque mesi dopo, Umberto Bossi presenta in aula la mozione con cui la Lega fa cadere il governo di cui fa parte.",
+    lite: ["LEGA", "FI", "AN", "UDC"],
+// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
+    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    sx: [{ foto: "Umberto Bossi", nome: "Umberto Bossi", ruolo: "Lega Nord" }],
+    dx: [{ logo: "FI_1994", gruppo: "FI", nome: "Forza Italia, AN, CCD", ruolo: "gli alleati" }, { gruppo: "AN" }, { logo: "CCD", gruppo: "CCD" }],
+    q: "La Lega, onorevole Presidente, ==le toglie la fiducia!==",
+    annot: "(Vivissime, reiterate proteste dei deputati dei gruppi di Forza Italia, di Alleanza nazionale-MSI e del Centro cristiano democratico)" },
+  { data: "2003-07-10", oratore: "Cè", governo: "Berlusconi II", titolo: "«È vero!»",
+    contesto: "Nella Casa delle libertà le liti in aula sono rare. Ma su una proposta di legge che la Lega è l'unica a combattere, il leghista Alessandro Cè si rivolge agli alleati.",
+    lite: ["LEGA", "FI"],
+// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
+    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    sx: [{ foto: "Alessandro Cè", nome: "Alessandro Cè", ruolo: "Lega Nord" }],
+    dx: [{ logo: "FI_1994", gruppo: "FI", nome: "Forza Italia", ruolo: "" }],
+    q: "Abbiamo addirittura i colleghi della Casa delle libertà e di Forza Italia che dicono: ==siamo stanchi di sentire la Lega==…",
+    annot: "(Una voce dai banchi del gruppo di Forza Italia: «È vero!»)",
+    seguito: "È vero? Sì? Allora, ==alzati e dillo==, però, invece di essere sordo e muto!" },
+  { data: "2013-11-20", oratore: "Brunetta", governo: "Letta (con FI)", titolo: "La fine delle larghe intese",
+    contesto: "Il governo Letta tiene insieme PD e Popolo della libertà. Pochi giorni prima che Forza Italia lasci la maggioranza, il capogruppo Renato Brunetta accusa l'alleato.",
+    lite: ["FI", "PD"],
+// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
+    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    sx: [{ foto: "Renato Brunetta", nome: "Renato Brunetta", ruolo: "Popolo della libertà" }],
+    dx: [{ logo: "PD", gruppo: "PD", nome: "Partito democratico", ruolo: "il partito del premier Letta" }],
+    q: "…con questa delusione nei confronti del Partito Democratico che ==ha ucciso le larghe intese== con la decisione di votare la decadenza di Silvio Berlusconi…",
+    annot: "(Proteste dei deputati del gruppo Partito Democratico)" },
+  { data: "2021-03-24", oratore: "Scerra", governo: "Draghi", titolo: "«Basta!»",
+    contesto: "Nel governo Draghi, Movimento 5 Stelle e Lega tornano alleati dopo la rottura del 2019. Alla vigilia di un Consiglio europeo, un deputato grillino ricorda a Salvini le sue simpatie per Orbán.",
+    lite: ["M5S", "LEGA"],
+// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
+    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    sx: [{ foto: "Filippo Scerra", nome: "Filippo Scerra", ruolo: "Movimento 5 Stelle" }],
+    dx: [{ logo: "LEGA_2018", gruppo: "Lega", nome: "Lega", ruolo: "il partito di Salvini" }],
+    q: "Ben venga per noi, Presidente, se il signor Matteo Salvini, che ==strizzava l'occhio ad Orbán==, mentre bloccava le trattative sul Recovery Fund, adesso abbia improvvisamente cambiato idea…",
+    annot: "(Dai banchi del gruppo Lega-Salvini Premier si grida: Basta!)" }
+];
+
+// ---------------------------------------------------------------- timeline
+const tip = d3.select("#tip");
+const parse = d3.timeParse("%Y-%m-%d");
+// date in italiano ("21 dicembre 1994")
+const itFmt = d3.timeFormatLocale({ dateTime: "%A %e %B %Y, %X", date: "%d/%m/%Y", time: "%H:%M:%S", periods: ["AM", "PM"],
+  days: ["domenica", "lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato"], shortDays: ["dom", "lun", "mar", "mer", "gio", "ven", "sab"],
+  months: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
+  shortMonths: ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"] }).format;
+const L = DATI.litigi.map(d => ({ ...d, t: parse(d.data) }));
+document.getElementById("n-litigi").textContent = L.length.toLocaleString("it-IT");
+document.getElementById("n-settore").textContent = L.filter(d => d.fonte === "settore").length.toLocaleString("it-IT");
+document.getElementById("n-tot").textContent = L.length.toLocaleString("it-IT");
+const G = DATI.governi.map(g => ({ ...g, a: parse(g.inizio), b: parse(g.fine) }));
+const dominioTutto = [parse("1948-01-01"), parse("2023-01-01")];
+const DURATA = matchMedia("(prefers-reduced-motion: reduce)").matches || location.search.includes("statico") ? 0 : 700;
+
+// disegna la timeline in un svg: orizzontale (tempo da sinistra a destra, pile verso l'alto)
+// o verticale (tempo dall'alto in basso, pile verso destra) accanto alle scene.
+// opt: dominio, gov (governo evidenziato), evid (id dei pallini della scena), vert
+function disegnaTL(sel, opt) {
+  if (sel.empty()) return;   // es. anteprime ?solo, dove le timeline complete non ci sono
+  const W = sel.node().clientWidth || 900, H = sel.node().clientHeight || 150;
+  sel.attr("viewBox", `0 0 ${W} ${H}`).selectAll("*").remove();
+  const vert = !!opt.vert, X0 = 34;                    // in verticale: spazio a sinistra per gli anni
+  const lung = vert ? H : W, spazio = vert ? W - X0 - 4 : H - 22;
+  const t = d3.scaleTime().domain(opt.dominio).range(vert ? [4, H - 4] : [4, W - 4]);
+  const zoom = (opt.dominio[1] - opt.dominio[0]) / 3.15e10 < 12;
+  // impilamento: i pallini dello stesso mese (o giorno, se zoomato) si mettono in fila
+  const vis = L.filter(d => d.t >= opt.dominio[0] && d.t <= opt.dominio[1]);
+  const cont = new Map(), k = new Map();
+  vis.forEach(d => { const c = zoom ? d.data : d.data.slice(0, 7); const i = cont.get(c) || 0; k.set(d.id, i); cont.set(c, i + 1); });
+  const r = zoom ? Math.min(vert ? 4.5 : 6, Math.max(2.5, lung / 260)) : Math.max(1.6, lung / 600);
+  // se la pila più alta non entra, i pallini si avvicinano (fino a sovrapporsi in parte)
+  const passo = Math.min(r * 2 + 0.6, (spazio - 2 * r - 4) / Math.max(1, d3.max(k.values()) || 0));
+  const base = H - 22;
+
+  // bande dei governi
+  sel.append("g").selectAll("rect").data(G).join("rect")
+    .attr(vert ? "y" : "x", g => t(g.a)).attr(vert ? "height" : "width", g => Math.max(0, t(g.b) - t(g.a)))
+    .attr(vert ? "x" : "y", vert ? X0 : 0).attr(vert ? "width" : "height", vert ? W - X0 : base)
+    .attr("fill", (g, i) => g.governo === opt.gov ? "var(--grid)" : i % 2 ? "var(--band-a)" : "var(--band-b)");
+  // nomi dei governi solo se la parte visibile della banda è abbastanza ampia
+  const visMax = vert ? H : W;
+  sel.append("g").selectAll("text").data(G.filter(g => zoom && Math.min(t(g.b), visMax) - Math.max(t(g.a), 0) > (vert ? 18 : 70))).join("text")
+    .attr("class", "gov-lab").text(g => g.governo)
+    .attr("text-anchor", vert ? "end" : "start")
+    .attr("x", g => vert ? W - 4 : Math.max(t(g.a), 4) + 5).attr("y", g => vert ? Math.max(t(g.a), 0) + 13 : 13);
+
+  // asse
+  sel.append("g").attr("class", "asse").attr("transform", vert ? `translate(${X0},0)` : `translate(0,${base})`)
+    .call((vert ? d3.axisLeft(t) : d3.axisBottom(t)).ticks(zoom ? d3.timeYear.every(1) : d3.timeYear.every(10)).tickFormat(itFmt("%Y")).tickSizeOuter(0));
+
+  // pallini (quelli della scena più grandi, gli altri governi sbiaditi)
+  const evid = opt.evid || new Set();
+  sel.append("g").selectAll("circle").data(vis).join("circle")
+    .attr("cx", d => vert ? X0 + r + 3 + k.get(d.id) * passo : t(d.t))
+    .attr("cy", d => vert ? t(d.t) : Math.max(r + 2, base - r - 2 - k.get(d.id) * passo))
+    .attr("r", d => evid.has(d.id) ? r * 1.7 : r)
+    .attr("fill", "var(--ost)")
+    .attr("opacity", d => !opt.gov || d.governo === opt.gov ? 1 : 0.25)
+    .on("pointermove", mostra).on("pointerleave", () => tip.style("opacity", 0));
+}
+
+function mostra(e, d) {
+  tip.html("");
+  tip.append("div").append("b").text(itFmt("%e %B %Y")(d.t));
+  tip.append("div").text(`${d.chi_nome} → ${d.a_chi_nome}`);
+  tip.append("div").attr("class", "k").text(`durante l'intervento di ${d.oratore} · governo ${d.governo}`);
+  if (d.fonte === "settore") tip.append("div").attr("class", "k").text("partito dedotto dal settore dell'aula");
+  tip.append("div").style("font-style", "italic").style("margin-top", "4px").text(`(${d.annotazione})`);
+  const tw = 310, xx = e.clientX + 14 + tw > innerWidth ? e.clientX - tw - 10 : e.clientX + 14;
+  tip.style("left", xx + "px").style("top", (e.clientY + 14) + "px").style("opacity", 1);
+}
+
+// ---------------------------------------------------------------- emiciclo
+// seggi a inizio legislatura, più le scissioni avvenute prima della data della scena
+const E = DATI.emiciclo;
+const EW = 460, EH = 222, CX = 230, CY = 212, R_OUT = 190, R_IN = 78;
+const ROMANI = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX"];
+const ETICHETTA = { MON: "Monarchici", LEGA: "Lega", ALTRI: "altri", MISTO: "misto", FDI: "FdI", AZIV: "Az-IV", BN: "Liberali" };
+const etichetta = s => ETICHETTA[s] || s;
+
+function composizione(data) {
+  const leg = d3.max(E.legislature.filter(l => l.inizio <= data), l => l.legislature);
+  const b = E.seggi.filter(s => s.legislature === leg).map(s => ({ ...s }));
+  E.scissioni.filter(s => s.legislature === leg && s.data <= data).forEach(s => {
+    const o = b.find(x => x.sigla === s.da);
+    o.seggi -= s.seggi;
+    if (s.residuo) o.sigla = s.residuo;   // es. 1969: il PSU torna PSI, i socialdemocratici escono
+    const n = b.find(x => x.sigla === s.sigla);
+    if (n) n.seggi += s.seggi; else b.push({ legislature: leg, sigla: s.sigla, seggi: s.seggi, stima: true });
+  });
+  b.sort((x, y) => E.ordine.indexOf(x.sigla) - E.ordine.indexOf(y.sigla));
+  return { leg, b: b.filter(x => x.seggi > 0) };
+}
+
+// posti a sedere: file concentriche, ordinati da sinistra a destra (come in emiciclo_template.html)
+function posti(n) {
+  const r0 = R_IN / R_OUT;
+  let righe = 4;
+  while (Math.PI * righe * (1 + r0) / 2 / ((1 - r0) / (righe - 1)) < n) righe++;
+  const raggi = d3.range(righe).map(i => r0 + (1 - r0) * i / (righe - 1));
+  const tot = d3.sum(raggi);
+  const perFila = raggi.map(r => Math.round(n * r / tot));
+  perFila[righe - 1] += n - d3.sum(perFila);
+  const p = [];
+  raggi.forEach((r, i) => {
+    const k = perFila[i];
+    for (let j = 0; j < k; j++) p.push({ a: Math.PI * (1 - (k === 1 ? 0.5 : j / (k - 1))), r: r * R_OUT });
+  });
+  p.sort((x, y) => d3.descending(x.a, y.a) || d3.ascending(x.r, y.r));
+  return { p, rSeat: Math.max(1.6, (1 - r0) / (righe - 1) * R_OUT * 0.38) };
+}
+
+function statoAula(s) {
+  // il governo di oggi è fuori dal corpus: la maggioranza è scritta nel passo
+  const g = s.maggioranza ? { governo: s.governo, maggioranza: s.maggioranza } : G.find(g => g.governo === s.governo);
+  const { leg, b } = composizione(s.data);
+  return { leg, b, g, magg: new Set(g.maggioranza.split(" ")), lite: new Set(s.lite) };
+}
+
+function disegnaAula(sel, s, dur) {
+  const A = statoAula(s);
+  const { p, rSeat } = posti(d3.sum(A.b, d => d.seggi));
+  const seats = [];
+  let i = 0;
+  A.b.forEach(b => {
+    const mine = p.slice(i, i + b.seggi); i += b.seggi;
+    mine.forEach(q => seats.push({ ...q, sigla: b.sigla }));
+    b.a = d3.mean(mine, q => q.a);
+  });
+  // colori veri, non var(--…): d3 non sa interpolare le variabili CSS e il cambio scatterebbe alla fine
+  const cs = getComputedStyle(document.documentElement), col = v => cs.getPropertyValue(v).trim();
+  const C = { ost: col("--ost"), magg: col("--magg"), opp: col("--opp") };
+  const colore = sg => A.lite.has(sg) ? C.ost : A.magg.has(sg) ? C.magg : C.opp;
+  const pos = (a, r) => [CX + r * Math.cos(a), CY - r * Math.sin(a)];
+  sel.attr("viewBox", `0 0 ${EW} ${EH}`).attr("role", "img")
+    .attr("aria-label", `Camera, ${ROMANI[A.leg]} legislatura: maggioranza del governo ${A.g.governo}`);
+  const t = sel.transition().duration(dur);
+  sel.selectAll("circle").data(seats, (d, k) => k).join(
+      en => en.append("circle").attr("cx", d => pos(d.a, d.r)[0]).attr("cy", d => pos(d.a, d.r)[1]).attr("r", 0),
+      up => up, ex => ex.transition(t).attr("r", 0).remove())
+    .transition(t)
+    .delay(d => dur * 0.8 * (1 - d.a / Math.PI))   // onda da sinistra a destra: si vede anche quando cambia solo il colore
+    .attr("cx", d => pos(d.a, d.r)[0]).attr("cy", d => pos(d.a, d.r)[1]).attr("r", rSeat).attr("fill", d => colore(d.sigla));
+  // etichette fuori dall'arco, solo per i gruppi abbastanza grandi (o in lite)
+  const lab = A.b.filter(b => b.seggi >= 14 || A.lite.has(b.sigla));
+  sel.selectAll("text.emi-lab").data(lab, b => b.sigla).join("text")
+    .attr("class", b => "emi-lab" + (A.lite.has(b.sigla) ? " lite" : ""))
+    .attr("text-anchor", b => Math.cos(b.a) > 0.35 ? "start" : Math.cos(b.a) < -0.35 ? "end" : "middle")
+    .text(b => etichetta(b.sigla))
+    .transition(t)
+    .attr("x", b => pos(b.a, R_OUT + 9)[0]).attr("y", b => pos(b.a, R_OUT + 9)[1] + (Math.sin(b.a) < 0.3 ? 4 : 0));
+  return A;
+}
+
+// partiti della maggioranza presenti in aula (le sigle senza seggi propri restano fuori)
+function alleati(A) {
+  return A.b.filter(b => A.magg.has(b.sigla)).map(b => b.sigla);
+}
+
+// ---------------------------------------------------------------- scene
+const main = d3.select("#scene");
+
+// testo con le parole chiave a pennarello: "==parole==" diventa <mark class="pennarello">
+function scrivi(sel, testo) {
+  testo.split(/(==[^=]+==)/).forEach(p => {
+    if (/^==[^=]+==$/.test(p)) sel.append("mark").attr("class", "pennarello").text(p.slice(2, -2));
+    else if (p) sel.append("span").text(p);
+  });
+  return sel;
+}
+
+// avatar e nome di chi parla o reagisce: foto, logo del partito o sigla
+function chi(dove, gente) {
+  const c = dove.append("div").attr("class", "chi");
+  const ritr = c.append("div").attr("class", "ritratti" + (gente.length > 1 ? " molti" : ""));
+  gente.forEach(g => {
+    if (g.foto && FOTO[g.foto]) ritr.append("img").attr("class", "ritratto").attr("src", FOTO[g.foto].locale).attr("alt", g.foto);
+    // quando reagisce un gruppo e non un singolo deputato: il logo del partito (a colori)
+    else if (g.logo && LOGHI[g.logo]) ritr.append("img").attr("class", "ritratto logo").attr("src", LOGHI[g.logo].locale).attr("alt", "logo " + g.gruppo);
+    else if (g.gruppo || g.foto) ritr.append("div").attr("class", "ritratto gruppo").text(g.gruppo || g.foto);
+  });
+  if (gente[0].nome) c.append("div").attr("class", "nome").text(gente[0].nome);
+  if (gente[0].ruolo) c.append("div").attr("class", "ruolo").text(gente[0].ruolo);
+}
+
+// due passi senza litigio: la Camera all'inizio della Repubblica e quella di oggi
+const PASSI = {
+  inizio: { data: "1948-05-24", governo: "De Gasperi V", lite: [],
+    // testo segnaposto (prima: «Si parte dal 1948, dalla prima Camera della Repubblica…»)
+    testo: ["Lorem ipsum dolor sit amet, ==consectetur adipiscing elit==. Integer posuere erat a ante venenatis dapibus, posuere velit aliquet. Donec ullamcorper nulla non metus auctor fringilla. Maecenas faucibus mollis interdum, sed posuere consectetur est at lobortis.", "Vestibulum id ligula porta felis euismod semper. Cras mattis consectetur purus sit amet fermentum. Nullam quis risus eget urna mollis ornare vel eu leo. Aenean lacinia bibendum nulla sed consectetur, curabitur blandit tempus porttitor."] },
+  oggi: { data: "2022-10-13", governo: "Meloni", maggioranza: "FDI LEGA FI NM", lite: [], oggi: true,
+    // testo segnaposto (prima: «E oggi? La Camera eletta nel 2022 ha 400 seggi invece di 630…»)
+    testo: ["Etiam porta sem ==malesuada magna mollis euismod==. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.", "Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Sed posuere consectetur est at lobortis."] },
+};
+const passo = nome => main.append("section").attr("class", "passo").attr("data-passo", nome)
+  .call(sec => PASSI[nome].testo.forEach(t => scrivi(sec.append("p"), t)));
+passo("inizio");
+
+SCENE.forEach((s, i) => {
+  // paragrafi tra una scena e l'altra: l'emiciclo passa già alla Camera della scena che segue
+  if (s.prima) main.append("section").attr("class", "passo").attr("data-scena", i)
+    .call(sec => s.prima.forEach(t => scrivi(sec.append("p"), t)));
+  const sc = main.append("section").attr("class", "scena" + (DURATA ? " anima" : "")).attr("data-i", i);
+  const tx = sc.append("div").attr("class", "scena-testo");
+  tx.append("div").attr("class", "data").text(`Scena ${i + 1} di ${SCENE.length} · ${itFmt("%e %B %Y")(parse(s.data))} · governo ${s.governo.replace(" (con FI)", "")}`);
+  tx.append("h2").text(s.titolo);
+  // chi governa insieme: i partiti in lite in arancione
+  const A = statoAula(s), gov = tx.append("div").attr("class", "al-governo");
+  gov.append("span").text("Al governo insieme:");
+  alleati(A).forEach(sg => gov.append("span").attr("class", "chip" + (A.lite.has(sg) ? " lite" : ""))
+    .attr("title", E.nomi[sg] || sg).text(etichetta(sg)));
+  scrivi(tx.append("p").attr("class", "contesto"), s.contesto);
+  // il litigio come dialogo: la battuta, la reazione registrata dagli stenografi, l'eventuale replica
+  const dlg = tx.append("div").attr("class", "dialogo");
+  const b1 = dlg.append("div").attr("class", "battuta parla");
+  chi(b1, s.sx);
+  scrivi(b1.append("div").attr("class", "fumetto").append("q"), s.q);
+  const b2 = dlg.append("div").attr("class", "battuta reazione");
+  const f2 = b2.append("div").attr("class", "fumetto");
+  f2.append("span").attr("class", "sten").text("dal resoconto stenografico");
+  f2.append("span").attr("class", "reaz").text(s.annot);
+  chi(b2, s.dx);
+  if (s.seguito) scrivi(dlg.append("div").attr("class", "battuta parla segue").append("div").attr("class", "fumetto").append("q"), s.seguito);
+  // crediti delle foto della scena
+  const cr = [...s.sx, ...s.dx].map(g => g.foto && FOTO[g.foto] ? FOTO[g.foto]
+    : g.logo && LOGHI[g.logo] ? { ...LOGHI[g.logo], persona: "logo " + g.gruppo } : null).filter(Boolean);
+  if (cr.length) {
+    const c = tx.append("div").attr("class", "crediti");
+    cr.forEach((fz, k) => {
+      if (k) c.append("span").text(" · ");
+      c.append("span").text(`${fz.persona}: ${fz.autore}, `);
+      c.append("a").attr("href", fz.pagina_commons).attr("target", "_blank").attr("rel", "noopener").text(fz.licenza);
+    });
+  }
+  // accanto: la timeline del governo della scena
+  const g = G.find(g => g.governo === s.governo);
+  const n = L.filter(d => d.governo === g.governo).length;
+  const mini = sc.append("div").attr("class", "mini");
+  mini.append("div").attr("class", "mini-cap").call(c => {
+    c.append("b").text(`${n} litigi tra alleati`);
+    c.append("span").text(` durante il governo ${g.governo.replace(" (con FI)", "")}`);
+  });
+  mini.append("svg").attr("role", "img").attr("aria-label", `Litigi tra alleati durante il governo ${g.governo}`);
+});
+
+passo("oggi");
+
+// tutte le timeline: le due complete (inizio e fine) e quelle delle scene
+function disegnaTutte() {
+  const vert = matchMedia("(min-width: 900px)").matches;
+  disegnaTL(d3.select("#tl-inizio svg"), { dominio: dominioTutto });
+  disegnaFine();
+  d3.selectAll(".tl-conta").text(`${L.length.toLocaleString("it-IT")} litigi tra alleati`);
+  d3.selectAll(".scena").each(function () {
+    const s = SCENE[+this.dataset.i], g = G.find(g => g.governo === s.governo);
+    const pad = Math.max(2.6e10, (g.b - g.a) * 0.25);
+    disegnaTL(d3.select(this).select(".mini svg"), { vert, gov: g.governo, dominio: [new Date(+g.a - pad), new Date(+g.b + pad)],
+      evid: new Set(L.filter(d => d.data === s.data && d.oratore.toLowerCase().includes(s.oratore.toLowerCase())).map(d => d.id)) });
+  });
+}
+
+// ---------------------------------------------------------------- zoom sulla timeline finale
+// trascinare sposta, i pulsanti (o ctrl + rotella, o due dita sul telefono) ingrandiscono;
+// la rotella da sola resta allo scorrimento della pagina
+const svgFine = d3.select("#tl-fine svg");
+let zt = d3.zoomIdentity;
+function disegnaFine() {
+  if (!document.contains(svgFine.node())) return;
+  const W = svgFine.node().clientWidth || 900, H = svgFine.node().clientHeight || 150;
+  const base = d3.scaleTime().domain(dominioTutto).range([4, W - 4]);
+  zoomFine.extent([[0, 0], [W, H]]).translateExtent([[0, 0], [W, H]]);
+  const dominio = zt.rescaleX(base).domain();
+  disegnaTL(svgFine, { dominio });
+  d3.select("#zoom-stato").text(zt.k > 1.01 ? `${itFmt("%Y")(dominio[0])}–${itFmt("%Y")(dominio[1])}` : "");
+  d3.select("#zoom-tutto").property("disabled", zt.k <= 1.01);
+}
+const zoomFine = d3.zoom().scaleExtent([1, 60])
+  .filter(e => e.type === "wheel" ? e.ctrlKey || e.metaKey : !e.button)
+  .on("zoom", e => { zt = e.transform; disegnaFine(); });
+svgFine.call(zoomFine).style("touch-action", "pan-y").style("cursor", "grab");
+const conMoto = () => DURATA ? svgFine.transition().duration(DURATA) : svgFine;
+d3.select("#zoom-piu").on("click", () => conMoto().call(zoomFine.scaleBy, 2));
+d3.select("#zoom-meno").on("click", () => conMoto().call(zoomFine.scaleBy, 0.5));
+d3.select("#zoom-tutto").on("click", () => conMoto().call(zoomFine.transform, d3.zoomIdentity));
+
+// ---------------------------------------------------------------- emiciclo in alto
+// segue la scena che si sta leggendo; prima delle scene la Camera del 1948, dopo quella di oggi
+let attuale = null;
+function attiva(el) {
+  const chiave = el.dataset.passo || +(el.dataset.scena ?? el.dataset.i);
+  if (chiave === attuale) return;
+  const s = el.dataset.passo ? PASSI[el.dataset.passo] : SCENE[chiave];
+  const A = disegnaAula(d3.select("#aula-svg"), s, attuale === null ? 0 : DURATA);
+  attuale = chiave;
+  const quando = s.oggi ? "oggi" : itFmt("%Y")(parse(s.data));
+  d3.select("#leg-lite").style("display", s.lite.length ? null : "none");
+  d3.select("#leg-magg").text(s.lite.length ? "il resto della maggioranza" : "maggioranza");
+  d3.select("#aula-tit").text(`Camera dei deputati · ${ROMANI[A.leg]} legislatura · ${quando}`);
+  d3.select("#aula-sub").text(`Maggioranza del governo ${A.g.governo.replace(" (con FI)", "")}: ${alleati(A).map(etichetta).join(", ")}`
+    + (s.oggi ? " (seggi delle elezioni del 2022)" : ""));
+}
+const obs = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && attiva(e.target)), { rootMargin: "-45% 0px -50% 0px" });
+document.querySelectorAll(".scena, .passo").forEach(s => obs.observe(s));
+// le battute del dialogo entrano quando la scena è visibile per un terzo (una volta sola)
+const obsVista = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("vista"); obsVista.unobserve(e.target); }
+}), { threshold: 0.3 });
+document.querySelectorAll(".scena.anima").forEach(s => obsVista.observe(s));
+// il pennarello passa quando la parola è ben dentro lo schermo; senza animazioni è già acceso
+const obsPenna = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("acceso"); obsPenna.unobserve(e.target); }
+}), { rootMargin: "0px 0px -25% 0px" });
+document.querySelectorAll("mark.pennarello").forEach(m => DURATA ? obsPenna.observe(m) : m.classList.add("acceso"));
+disegnaTutte();
+let ridisegno;
+addEventListener("resize", () => { clearTimeout(ridisegno); ridisegno = setTimeout(disegnaTutte, 150); });
+// ?solo=N mostra solo la scena N (da 1) con l'emiciclo in alto (anteprime)
+const solo = new URLSearchParams(location.search).get("solo");
+if (solo !== null) {
+  obs.disconnect();
+  [".apertura", ".intro", "#tl-inizio", ".ponte", "#tl-fine"].forEach(q => document.querySelector(q).remove());
+  document.querySelectorAll(".passo").forEach(p => p.remove());
+  document.querySelectorAll(".scena").forEach((s, k) => { if (k !== +solo - 1) s.remove(); else s.style.minHeight = "auto"; });
+  disegnaTutte();
+}
+// #scena=N apre una scena precisa (anteprime e link)
+const hs = +(new URLSearchParams(location.hash.slice(1)).get("scena") || 0);
+if (hs > 0 && solo === null) { const el = document.querySelectorAll(".scena")[hs - 1]; el.scrollIntoView(); attiva(el); }
+else attiva(document.querySelector(".passo, .scena"));
+</script>
+</body>
+</html>

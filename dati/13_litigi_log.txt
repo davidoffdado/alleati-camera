@@ -1,0 +1,23 @@
+Messaggi di avvertimento:
+1: il pacchetto 'data.table' è stato creato con R versione 4.3.3 
+2: il pacchetto 'jsonlite' è stato creato con R versione 4.3.3 
+litigi tra alleati: 1047 
+       fonte     N
+      <char> <int>
+1:   settore   355
+2:  deputato   386
+3: esplicito   306
+Key: <decennio>
+   decennio deputato esplicito settore
+      <num>    <int>     <int>   <int>
+1:     1940       17         0     104
+2:     1950       58         0     112
+3:     1960      102         0      78
+4:     1970       35         2      28
+5:     1980       61         0      32
+6:     1990       50        67       1
+7:     2000       47        97       0
+8:     2010        8        50       0
+9:     2020        8        90       0
+scritto viz/litigi.json: 313802 byte
+scritto viz/litigi.html con 19 foto

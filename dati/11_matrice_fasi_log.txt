@@ -1,0 +1,113 @@
+Messaggi di avvertimento:
+1: il pacchetto 'data.table' è stato creato con R versione 4.3.3 
+2: il pacchetto 'jsonlite' è stato creato con R versione 4.3.3 
+fasi: 51  dimensione: 184912 byte
+     fase legislature                    anni                       governi
+    <int>       <int>                  <char>                        <char>
+ 1:     1           1 1948-05-10 → 1949-12-21   De Gasperi IV, De Gasperi V
+ 2:     2           1 1950-01-31 → 1951-07-13                 De Gasperi VI
+ 3:     3           1 1951-07-31 → 1953-04-01                De Gasperi VII
+ 4:     6           2 1953-08-19 → 1953-12-19                         Pella
+ 5:     8           2 1954-02-18 → 1957-04-12               Scelba, Segni I
+ 6:     9           2 1957-05-29 → 1958-03-14                          Zoli
+ 7:    11           3 1958-07-15 → 1959-01-23                    Fanfani II
+ 8:    12           3 1959-02-24 → 1960-02-23                      Segni II
+ 9:    13           3 1960-04-04 → 1960-07-19                      Tambroni
+10:    14           3 1960-08-02 → 1962-02-06                   Fanfani III
+11:    15           3 1962-03-02 → 1963-02-14                    Fanfani IV
+12:    16           4 1963-06-27 → 1963-10-31                       Leone I
+13:    17           4 1963-12-12 → 1966-02-16               Moro I, Moro II
+14:    18           4 1966-03-03 → 1968-03-09                      Moro III
+15:    19           5 1968-07-05 → 1968-11-13                      Leone II
+16:    20           5 1968-12-16 → 1969-07-23                       Rumor I
+17:    21           5 1969-08-08 → 1970-03-05                      Rumor II
+18:    22           5 1970-04-07 → 1971-12-03            Rumor III, Colombo
+19:    24           6 1972-07-04 → 1973-05-29                  Andreotti II
+20:    25           6 1973-07-19 → 1974-03-06                      Rumor IV
+21:    26           6 1974-03-21 → 1974-11-19                       Rumor V
+22:    27           6 1974-11-26 → 1976-02-11                       Moro IV
+23:    30           7 1976-08-04 → 1978-02-22                 Andreotti III
+24:    31           7 1978-03-16 → 1979-03-20                  Andreotti IV
+25:    34           8 1979-08-08 → 1980-04-03                     Cossiga I
+26:    35           8 1980-04-08 → 1980-10-16                    Cossiga II
+27:    36           8 1980-10-23 → 1981-06-25                       Forlani
+28:    37           8 1981-06-30 → 1982-11-30     Spadolini I, Spadolini II
+29:    38           8 1982-12-01 → 1983-05-18                     Fanfani V
+30:    40           9 1983-08-10 → 1987-04-09             Craxi I, Craxi II
+31:    43          10 1987-08-03 → 1991-04-11  Goria, De Mita, Andreotti VI
+32:    44          10 1991-04-15 → 1992-03-12                 Andreotti VII
+33:    45          11 1992-04-23 → 1993-04-28        Andreotti VII, Amato I
+34:    46          11 1993-04-29 → 1994-02-23                        Ciampi
+35:    48          12 1994-05-19 → 1995-01-11                  Berlusconi I
+36:    49          12 1995-01-17 → 1996-02-28                          Dini
+37:    51          13 1996-05-29 → 1998-10-09                       Prodi I
+38:    52          13 1998-10-22 → 1999-12-18                     D'Alema I
+39:    53          13 1999-12-23 → 2000-04-19                    D'Alema II
+40:    54          13 2000-04-27 → 2001-03-14                      Amato II
+41:    55          14 2001-06-13 → 2006-03-15 Berlusconi II, Berlusconi III
+42:    57          15 2006-05-18 → 2008-04-09                      Prodi II
+43:    58          16 2008-05-13 → 2010-11-11       Berlusconi IV (con FLI)
+44:    59          16 2010-11-16 → 2011-11-12                 Berlusconi IV
+45:    60          16 2011-11-18 → 2013-01-22                         Monti
+46:    62          17 2013-04-29 → 2013-11-25                Letta (con FI)
+47:    63          17 2013-11-26 → 2016-12-06                  Letta, Renzi
+48:    64          17 2016-12-12 → 2018-01-17                     Gentiloni
+49:    66          18 2018-06-05 → 2019-08-01                       Conte I
+50:    67          18 2019-09-09 → 2021-01-25                      Conte II
+51:    68          18 2021-02-17 → 2022-09-28                        Draghi
+     fase legislature                    anni                       governi
+                                         maggioranza
+                                              <char>
+ 1:                               DC PSDI PLI BN PRI
+ 2:                                      DC PSDI PRI
+ 3:                                           DC PRI
+ 4:                                   DC MON PLI PRI
+ 5:                                  DC PSDI PLI PRI
+ 6:                                       DC MON MSI
+ 7:                                      DC PSDI PRI
+ 8:                                   DC PLI MON MSI
+ 9:                                       DC MSI MON
+10:                                  DC PSDI PLI PRI
+11:                                      DC PSDI PRI
+12:                                               DC
+13:                                  DC PSI PSDI PRI
+14:                              DC PSI PSDI PRI PSU
+15:                                               DC
+16:                              DC PSU PSI PSDI PRI
+17:                                  DC PSI PSDI PSU
+18:                              DC PSI PSDI PSU PRI
+19:                                      DC PSDI PLI
+20:                                  DC PSI PSDI PRI
+21:                                      DC PSI PSDI
+22:                                  DC PRI PSI PSDI
+23:                                               DC
+24:                              DC PCI PRI PSDI PSI
+25:                                      DC PSDI PLI
+26:                                       DC PSI PRI
+27:                                  DC PSI PSDI PRI
+28:                              DC PSI PSDI PRI PLI
+29:                              DC PSI PSDI PLI PRI
+30:                              DC PSI PSDI PRI PLI
+31:                              DC PSI PSDI PRI PLI
+32:                                  DC PSI PSDI PLI
+33:                                  DC PSI PSDI PLI
+34:                          DC PPI PSI PSDI PLI PRI
+35:                                   FI LEGA AN UDC
+36:                    PROGR PDS PPI LEGA VERDI RETE
+37:           DS PDS PPI VERDI SDI ALTRI RC PRI RETE
+38:                  DS PPI VERDI PDCI SDI ALTRI DEM
+39:                      DS PPI DEM VERDI PDCI ALTRI
+40:                  DS PPI DEM VERDI PDCI SDI ALTRI
+41:                           FI AN LEGA UDC PSI PRI
+42: ULIVO DS MARGH PD RC RNP PDCI IDV VERDI SD ALTRI
+43:                                FI LEGA ALTRI FLI
+44:                                    FI LEGA ALTRI
+45:                              FI PD UDC FLI ALTRI
+46:                                  PD FI ALTRI UDC
+47:                                     PD ALTRI UDC
+48:                                         PD ALTRI
+49:                                         M5S LEGA
+50:                                    M5S PD LEU IV
+51:                      M5S LEGA PD FI IV LEU ALTRI
+                                         maggioranza
+scritto viz/matrice.html

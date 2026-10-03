@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La DC e la conventio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --seat: #c9c7bf; --seat-alt: #aeaca4; --seat-grey: #e8e7e1; --seat-focus: #52514e; --app: #2a78d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --seat: #4a4945; --seat-alt: #5f5e59; --seat-grey: #2c2c2a; --seat-focus: #c3c2b7; --app: #3987e5;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --seat: #4a4945; --seat-alt: #5f5e59; --seat-grey: #2c2c2a; --seat-focus: #c3c2b7; --app: #3987e5;
+  }
+  body { margin: 0; background: var(--surface); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  figure { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+  svg { display: block; width: 100%; height: auto; }
+  .sig { fill: var(--ink); font-weight: 700; font-size: 17px; }
+  .pct { fill: var(--ink-2); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .pct.zero { fill: var(--ink); font-weight: 600; }
+  .centro { fill: var(--ink); font-size: 15px; font-weight: 600; }
+  figcaption { color: var(--ink-2); font-size: 14px; margin-top: 8px; }
+  figcaption .key { display: inline-block; width: 18px; border-top: 3px solid var(--app); vertical-align: middle; margin: 0 6px 0 0; border-radius: 2px; }
+</style>
+</head>
+<body>
+<figure>
+  <svg id="chart" viewBox="-120 0 1120 500" role="img"
+       aria-label="Emiciclo della Camera nella II legislatura: la DC applaude gli alleati centristi in un intervento su tre, il PCI e l'MSI quasi mai."></svg>
+  <figcaption>
+    <span class="key"></span>Applausi della Democrazia Cristiana agli altri partiti, Camera dei deputati, II legislatura (1953–1958).
+    Le percentuali indicano la quota degli interventi di ciascun partito applauditi dalla DC; lo spessore dell'arco è proporzionale.
+  </figcaption>
+</figure>
+<script>
+const DATI = /*__DATI__*/null;
+const LEG = 2, FOCUS = "DC";
+const W = 880, CX = W / 2, CY = 450, R_OUT = 380, R_IN = 150;
+
+// stessa disposizione dei seggi dell'emiciclo interattivo
+function posti(n) {
+  const r0 = R_IN / R_OUT;
+  let righe = 4;
+  while (Math.PI * righe * (1 + r0) / 2 / ((1 - r0) / (righe - 1)) < n) righe++;
+  const raggi = d3.range(righe).map(i => r0 + (1 - r0) * i / (righe - 1));
+  const tot = d3.sum(raggi);
+  let perFila = raggi.map(r => Math.round(n * r / tot));
+  perFila[righe - 1] += n - d3.sum(perFila);
+  const p = [];
+  raggi.forEach((r, i) => {
+    const k = perFila[i];
+    for (let j = 0; j < k; j++) p.push({ a: Math.PI * (1 - (k === 1 ? 0.5 : j / (k - 1))), r: r * R_OUT });
+  });
+  p.sort((x, y) => d3.descending(x.a, y.a) || d3.ascending(x.r, y.r));
+  return { p, rSeat: Math.max(1.6, (1 - r0) / (righe - 1) * R_OUT * 0.36) };
+}
+const xy = (a, r) => [CX + r * Math.cos(a), CY - r * Math.sin(a)];
+
+const L = DATI.find(d => d.legislatura === LEG);
+const svg = d3.select("#chart");
+const { p, rSeat } = posti(d3.sum(L.blocchi, b => b.seggi));
+let i = 0;
+const seats = [];
+L.blocchi.forEach((b, ib) => {   // ib: blocchi vicini in toni alterni, per vedere i confini
+  const mine = p.slice(i, i + b.seggi); i += b.seggi;
+  mine.forEach(s => seats.push({ ...s, sigla: b.sigla, grigio: b.grigio, alt: ib % 2 === 1 }));
+  b.a = d3.mean(mine, s => s.a);
+});
+const anc = new Map(L.blocchi.map(b => [b.sigla, b.a]));
+
+// archi: applausi della DC verso gli altri partiti
+const app = new Map(L.archi.filter(a => a.relazione === "approvazione" && a.da === FOCUS).map(a => [a.a, a]));
+const w = d3.scaleLinear([0, 0.5], [0.8, 16]).clamp(true);
+const gA = svg.append("g");
+for (const [sig, a] of app) {
+  if (!anc.has(sig) || a.quota < 0.05) continue;
+  const r = R_IN - 10, a1 = anc.get(FOCUS), a2 = anc.get(sig);
+  const [x1, y1] = xy(a1, r), [x2, y2] = xy(a2, r);
+  const dist = Math.abs(a1 - a2);
+  const [cx, cy] = xy((a1 + a2) / 2, r * Math.max(0.05, 0.8 - dist / Math.PI * 0.85));
+  gA.append("path").attr("d", `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`)
+    .attr("fill", "none").attr("stroke", "var(--app)").attr("stroke-linecap", "round")
+    .attr("stroke-width", w(a.quota)).attr("opacity", 0.8);
+}
+
+svg.append("g").selectAll("circle").data(seats).join("circle")
+  .attr("r", rSeat).attr("cx", d => xy(d.a, d.r)[0]).attr("cy", d => xy(d.a, d.r)[1])
+  .attr("fill", d => d.sigla === FOCUS ? "var(--seat-focus)" : d.grigio ? "var(--seat-grey)" : d.alt ? "var(--seat-alt)" : "var(--seat)");
+
+// etichette: sigla + quota di interventi applauditi dalla DC.
+// Partiti troppo vicini (spicchi sottili accanto alla DC) vanno su un secondo anello, con linea di richiamo
+const fmt = v => Math.round(v * 100) + "%";
+const gL = svg.append("g");
+const lab = L.blocchi.filter(b => !b.grigio).sort((x, y) => d3.descending(x.a, y.a));
+let prec = null, anello = 0;
+lab.forEach(b => {
+  anello = prec !== null && Math.abs(prec - b.a) < 0.14 ? 1 - anello : 0;
+  prec = b.a;
+  const rl = R_OUT + 22 + anello * 42;
+  if (anello) {
+    const [x1, y1] = xy(b.a, R_OUT + 8), [x2, y2] = xy(b.a, rl - 14);
+    gL.append("line").attr("x1", x1).attr("y1", y1).attr("x2", x2).attr("y2", y2)
+      .attr("stroke", "var(--muted)").attr("stroke-width", 1);
+  }
+  const [x, y] = xy(b.a, rl);
+  const anchor = b.a > Math.PI * 0.55 ? "end" : b.a < Math.PI * 0.45 ? "start" : "middle";
+  const t = gL.append("text").attr("x", x).attr("y", y + 5).attr("text-anchor", anchor);
+  t.append("tspan").attr("class", "sig").text(b.sigla + (b.sigla === FOCUS ? "" : "  "));
+  if (b.sigla !== FOCUS) {
+    const a = app.get(b.sigla), q = a ? a.quota : 0;
+    t.append("tspan").attr("class", "pct" + (q < 0.02 ? " zero" : "")).text(fmt(q));
+  }
+});
+</script>
+</body>
+</html>

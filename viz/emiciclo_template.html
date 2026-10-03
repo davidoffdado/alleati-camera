@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chi applaude chi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --surface: #fcfcfb; --page: #f9f9f7;
+    --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --base: #c3c2b7; --border: rgba(11,11,11,0.10);
+    --seat: #b5b3ab; --seat-alt: #9a988f; --seat-grey: #e1e0d9; --seat-sel: #0b0b0b;
+    --app: #2a78d6; --ost: #eb6834;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface: #1a1a19; --page: #0d0d0d;
+      --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --base: #383835; --border: rgba(255,255,255,0.10);
+      --seat: #5e5d58; --seat-alt: #74736d; --seat-grey: #2c2c2a; --seat-sel: #ffffff;
+      --app: #3987e5; --ost: #d95926;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface: #1a1a19; --page: #0d0d0d;
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --base: #383835; --border: rgba(255,255,255,0.10);
+    --seat: #5e5d58; --seat-alt: #74736d; --seat-grey: #2c2c2a; --seat-sel: #ffffff;
+    --app: #3987e5; --ost: #d95926;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .sub { color: var(--ink-2); margin: 0 0 20px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-bottom: 8px; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .seg button { border: 0; background: transparent; color: var(--ink-2); padding: 6px 12px; font: inherit; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--grid); color: var(--ink); font-weight: 600; }
+  .seg button:focus-visible, .play:focus-visible, input:focus-visible { outline: 2px solid var(--app); outline-offset: 2px; }
+  .timeline { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 8px 0 4px; }
+  .timeline input { min-width: 0; }
+  @media (max-width: 560px) { .leg-title { order: -1; width: 100%; } }
+  .timeline input { flex: 1; accent-color: var(--ink-2); }
+  .play { border: 1px solid var(--border); background: transparent; color: var(--ink); border-radius: 8px;
+          width: 36px; height: 32px; cursor: pointer; font-size: 14px; }
+  .leg-title { font-size: 1.15rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .leg-title span { color: var(--ink-2); font-weight: 400; }
+  svg { display: block; width: 100%; height: auto; }
+  .lbl { fill: var(--ink-2); font-size: 12px; }
+  .lbl.sel { fill: var(--ink); font-weight: 600; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--ink-2); font-size: 13px; margin-top: 4px; }
+  .key { display: inline-block; width: 18px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+  .hint { color: var(--muted); font-size: 13px; }
+  .note { color: var(--ink-2); font-size: 13px; margin: 10px 0 0; padding-left: 12px; border-left: 2px solid var(--grid); }
+  .tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+         border-radius: 8px; padding: 8px 10px; font-size: 13px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+         max-width: 280px; opacity: 0; transition: opacity .1s; z-index: 10; }
+  .tip strong { font-size: 15px; font-variant-numeric: tabular-nums; }
+  .tip .k { color: var(--ink-2); }
+  details { margin-top: 16px; }
+  summary { cursor: pointer; color: var(--ink-2); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px; }
+  th, td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--grid); }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .table-wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Chi applaude chi alla Camera</h1>
+  <p class="sub">Le reazioni tra partiti nei resoconti stenografici, legislatura per legislatura, dal 1948 al 2022.</p>
+
+  <div class="card">
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Tipo di reazione">
+        <button data-rel="approvazione" aria-pressed="true">Applausi</button>
+        <button data-rel="ostilita" aria-pressed="false">Ostilità</button>
+        <button data-rel="entrambe" aria-pressed="false">Entrambe</button>
+      </div>
+      <label class="hint">Mostra archi sopra il <output id="sogliaOut">5</output>%
+        <input id="soglia" type="range" min="1" max="30" value="5" style="vertical-align: middle; width: 110px;">
+      </label>
+    </div>
+
+    <div class="timeline">
+      <button class="play" id="play" aria-label="Avvia animazione">▶</button>
+      <input id="leg" type="range" min="1" max="18" value="1" aria-label="Legislatura">
+      <div class="leg-title" id="legTitle"></div>
+    </div>
+
+    <svg id="chart" viewBox="-70 0 1020 500" role="img" aria-labelledby="legTitle"></svg>
+
+    <div class="legend">
+      <span><span class="key" style="border-color: var(--app)"></span>applausi</span>
+      <span><span class="key" style="border-color: var(--ost)"></span>ostilità (proteste, commenti, rumori, interruzioni)</span>
+      <span>spessore = quota degli interventi del partito che riceve</span>
+    </div>
+    <p class="hint" id="hint">Passa sopra un partito per vedere solo le sue relazioni; clicca per fissarlo.</p>
+    <div id="notes"></div>
+
+    <details>
+      <summary>Tabella delle relazioni di questa legislatura</summary>
+      <div class="table-wrap"><table id="tab"></table></div>
+    </details>
+  </div>
+</main>
+<div class="tip" id="tip" role="status"></div>
+
+<script>
+const DATI = /*__DATI__*/null;
+
+const W = 880, H = 500, CX = W / 2, CY = 450, R_OUT = 380, R_IN = 150;
+const svg = d3.select("#chart");
+const gArcs = svg.append("g");
+const gSeats = svg.append("g");
+const gLabels = svg.append("g");
+const tip = d3.select("#tip");
+const fmt = v => (v * 100).toLocaleString("it-IT", { maximumFractionDigits: 0 }) + "%";
+
+let stato = { leg: 1, rel: "approvazione", soglia: 0.05, sel: null, hover: null };
+
+// ---- posti a sedere: file concentriche, posti ordinati da sinistra a destra
+function posti(n) {
+  const r0 = R_IN / R_OUT;
+  // numero di file tale che la distanza tra file ≈ distanza tra posti
+  let righe = 4;
+  while (Math.PI * righe * (1 + r0) / 2 / ((1 - r0) / (righe - 1)) < n) righe++;
+  const raggi = d3.range(righe).map(i => r0 + (1 - r0) * i / (righe - 1));
+  const tot = d3.sum(raggi);
+  let perFila = raggi.map(r => Math.round(n * r / tot));
+  perFila[righe - 1] += n - d3.sum(perFila);
+  const p = [];
+  raggi.forEach((r, i) => {
+    const k = perFila[i];
+    for (let j = 0; j < k; j++) {
+      const a = Math.PI * (1 - (k === 1 ? 0.5 : j / (k - 1)));
+      p.push({ a, r: r * R_OUT });
+    }
+  });
+  p.sort((x, y) => d3.descending(x.a, y.a) || d3.ascending(x.r, y.r));
+  const passo = (1 - r0) / (righe - 1) * R_OUT;
+  return { p, rSeat: Math.max(1.6, passo * 0.36) };
+}
+const xy = (a, r) => [CX + r * Math.cos(a), CY - r * Math.sin(a)];
+
+function prepara(L) {
+  const blocchi = L.blocchi.map(b => ({ ...b }));
+  const { p, rSeat } = posti(d3.sum(blocchi, b => b.seggi));
+  let i = 0;
+  const seats = [];
+  blocchi.forEach((b, ib) => {   // ib: blocchi vicini in toni alterni, per vedere i confini
+    const mine = p.slice(i, i + b.seggi); i += b.seggi;
+    mine.forEach(s => seats.push({ ...s, sigla: b.sigla, grigio: b.grigio, alt: ib % 2 === 1 }));
+    b.a = d3.mean(mine, s => s.a);
+    b.aMin = d3.min(mine, s => s.a); b.aMax = d3.max(mine, s => s.a);
+  });
+  const ancore = new Map(blocchi.map(b => [b.sigla, b.a]));
+  (L.virtuali || []).forEach(v => ancore.set(v.sigla, d3.mean(v.blocchi, s => ancore.get(s))));
+  return { blocchi, seats, rSeat, ancore };
+}
+
+function percorso(a1, a2, dir) {
+  const r = R_IN - 10;
+  const [x1, y1] = xy(a1, r), [x2, y2] = xy(a2, r);
+  // controllo tirato verso il centro; i due versi A→B e B→A si separano
+  const am = (a1 + a2) / 2, dist = Math.abs(a1 - a2);
+  // anche tra partiti vicini l'arco deve piegare verso il centro, non scorrere lungo il bordo
+  const rc = r * Math.max(0.05, 0.8 - dist / Math.PI * 0.85) + dir * 14;
+  const [cx, cy] = xy(am, rc);
+  return `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`;
+}
+
+function nomeDi(L, s) {
+  const b = L.blocchi.find(x => x.sigla === s);
+  if (b) return b.nome;
+  const v = (L.virtuali || []).find(x => x.sigla === s);
+  return v ? v.nome : s;
+}
+
+function disegna(anim = true) {
+  const L = DATI.find(d => d.legislatura === stato.leg);
+  const P = prepara(L);
+  const t = svg.transition().duration(anim ? 450 : 0);
+  d3.select("#legTitle").html("");
+  d3.select("#legTitle").append("b").text(`${L.numero} legislatura `);
+  d3.select("#legTitle").append("span").text(`${L.inizio}–${L.fine}`);
+
+  const focus = stato.sel || stato.hover;
+
+  // seggi
+  const seats = gSeats.selectAll("circle").data(P.seats, (d, i) => i);
+  seats.join(
+    enter => enter.append("circle").attr("r", P.rSeat)
+      .attr("cx", d => xy(d.a, d.r)[0]).attr("cy", d => xy(d.a, d.r)[1]),
+    update => update, exit => exit.remove())
+    .on("pointermove", (e, d) => mostraBlocco(e, L, d.sigla))
+    .on("pointerleave", nascondi)
+    .on("click", (e, d) => { stato.sel = stato.sel === d.sigla ? null : d.sigla; disegna(false); })
+    .transition(t)
+    .attr("r", P.rSeat)
+    .attr("cx", d => xy(d.a, d.r)[0]).attr("cy", d => xy(d.a, d.r)[1])
+    .attr("fill", d => d.grigio ? "var(--seat-grey)" : (focus && d.sigla === focus ? "var(--seat-sel)" : d.alt ? "var(--seat-alt)" : "var(--seat)"));
+
+  // etichette dei partiti
+  const lab = P.blocchi.filter(b => !b.grigio && (b.seggi >= 14 || b.sigla === focus));
+  // il grafico scala con la larghezza: le etichette crescono in proporzione per restare ~12px a schermo
+  const k = Math.min(2.6, 1020 / (svg.node().clientWidth || 1020));   // 1020 = larghezza del viewBox, con margine per le etichette
+  gLabels.selectAll("text").data(lab, d => d.sigla).join("text")
+    .style("font-size", (12 * k) + "px")
+    .attr("class", d => "lbl" + (d.sigla === focus ? " sel" : ""))
+    .attr("text-anchor", d => d.a > Math.PI * 0.55 ? "end" : d.a < Math.PI * 0.45 ? "start" : "middle")
+    .attr("x", d => xy(d.a, R_OUT + 14)[0]).attr("y", d => xy(d.a, R_OUT + 14)[1] + 4)
+    .text(d => d.sigla + (d.stima ? "*" : ""));
+
+  // archi
+  const rels = stato.rel === "entrambe" ? ["approvazione", "ostilita"] : [stato.rel];
+  let archi = L.archi.filter(a => rels.includes(a.relazione) && a.quota >= stato.soglia && a.interventi >= 10
+                                  && P.ancore.has(a.da) && P.ancore.has(a.a));
+  const tocca = a => !focus || a.da === focus || a.a === focus ||
+    ((L.virtuali || []).some(v => v.sigla === a.da && v.blocchi.includes(focus)));
+  const w = d3.scaleLinear([0, 0.5], [0.8, 14]).clamp(true);
+  gArcs.selectAll("path").data(archi, a => a.relazione + a.da + a.a).join(
+    enter => enter.append("path").attr("fill", "none").attr("stroke-linecap", "round").attr("opacity", 0)
+      .attr("d", a => percorso(P.ancore.get(a.da), P.ancore.get(a.a), a.da < a.a ? 1 : -1)),
+    update => update,
+    exit => exit.transition(t).attr("opacity", 0).remove())
+    .on("pointermove", (e, a) => mostraArco(e, L, a))
+    .on("pointerleave", nascondi)
+    .transition(t)
+    .attr("d", a => percorso(P.ancore.get(a.da), P.ancore.get(a.a), a.da < a.a ? 1 : -1))
+    .attr("stroke", a => a.relazione === "approvazione" ? "var(--app)" : "var(--ost)")
+    .attr("stroke-width", a => w(a.quota))
+    .attr("opacity", a => tocca(a) ? (focus ? 0.85 : 0.5) : 0.06);
+
+  // note
+  const n = d3.select("#notes").selectAll("p").data([].concat(L.note || []));   // una sola nota arriva come stringa
+  n.join("p").attr("class", "note").text(d => d);
+
+  // tabella
+  const righe = L.archi.filter(a => rels.includes(a.relazione))
+    .sort((x, y) => d3.descending(x.quota, y.quota));
+  const tab = d3.select("#tab");
+  tab.html("");
+  const hd = tab.append("tr");
+  ["Chi reagisce", "A chi", "Reazione", "Quota", "Interventi"].forEach(h => hd.append("th").text(h));
+  righe.forEach(a => {
+    const tr = tab.append("tr");
+    tr.append("td").text(nomeDi(L, a.da));
+    tr.append("td").text(nomeDi(L, a.a));
+    tr.append("td").text(a.relazione === "approvazione" ? "applausi" : "ostilità");
+    tr.append("td").attr("class", "n").text(fmt(a.quota));
+    tr.append("td").attr("class", "n").text(`${a.interventi} su ${a.interventi_b}`);
+  });
+}
+
+function posiziona(e) {
+  const tw = 290, x = e.clientX + 14 + tw > innerWidth ? e.clientX - tw - 10 : e.clientX + 14;
+  tip.style("left", x + "px").style("top", (e.clientY + 14) + "px").style("opacity", 1);
+}
+function mostraArco(e, L, a) {
+  tip.html("");
+  tip.append("strong").text(fmt(a.quota));
+  tip.append("div").text(`${nomeDi(L, a.da)} → ${nomeDi(L, a.a)}`);
+  tip.append("div").attr("class", "k").text(
+    `${a.relazione === "approvazione" ? "applausi" : "reazioni ostili"} in ${a.interventi} interventi su ${a.interventi_b}` +
+    (a.quota_da_settore > 0.5 ? " · attribuzione dal settore dell'aula" : ""));
+  posiziona(e);
+}
+function mostraBlocco(e, L, s) {
+  if (stato.hover !== s) { stato.hover = s; disegna(false); }
+  const b = L.blocchi.find(x => x.sigla === s);
+  tip.html("");
+  tip.append("strong").text(b.nome);
+  tip.append("div").text(`${b.seggi} seggi${b.stima ? " (stima)" : ""}`);
+  if (b.autoapplauso != null)
+    tip.append("div").attr("class", "k").text(`si applaude da sé nel ${fmt(b.autoapplauso)} dei propri interventi`);
+  if (b.grigio) tip.append("div").attr("class", "k").text("gruppo eterogeneo: nessun arco");
+  posiziona(e);
+}
+function nascondi() {
+  tip.style("opacity", 0);
+  if (stato.hover) { stato.hover = null; disegna(false); }
+}
+
+// ---- controlli
+d3.selectAll(".seg button").on("click", function () {
+  stato.rel = this.dataset.rel;
+  d3.selectAll(".seg button").attr("aria-pressed", function () { return this.dataset.rel === stato.rel; });
+  disegna();
+});
+d3.select("#soglia").on("input", function () {
+  stato.soglia = +this.value / 100; d3.select("#sogliaOut").text(this.value); disegna(false);
+});
+d3.select("#leg").on("input", function () { stato.leg = +this.value; stato.sel = null; disegna(); });
+let timer = null;
+d3.select("#play").on("click", function () {
+  if (timer) { clearInterval(timer); timer = null; this.textContent = "▶"; return; }
+  this.textContent = "❚❚";
+  if (stato.leg === 18) stato.leg = 0;
+  timer = setInterval(() => {
+    if (stato.leg >= 18) { clearInterval(timer); timer = null; d3.select("#play").text("▶"); return; }
+    stato.leg++; d3.select("#leg").property("value", stato.leg); disegna();
+  }, 1600);
+});
+
+// stato iniziale dall'indirizzo, es. #leg=13&rel=ostilita (per linkare una legislatura dall'articolo)
+const h = new URLSearchParams(location.hash.slice(1));
+if (+h.get("leg") >= 1 && +h.get("leg") <= 18) { stato.leg = +h.get("leg"); d3.select("#leg").property("value", stato.leg); }
+if (["approvazione", "ostilita", "entrambe"].includes(h.get("rel"))) {
+  stato.rel = h.get("rel");
+  d3.selectAll(".seg button").attr("aria-pressed", function () { return this.dataset.rel === stato.rel; });
+}
+disegna(false);
+</script>
+</body>
+</html>

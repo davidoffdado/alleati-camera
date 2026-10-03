@@ -1,0 +1,8 @@
+# risultati intermedi della pipeline: pesanti e rigenerabili con R/01-10 (il corpus .RData sta in ../)
+dati/*.rds
+# R e sistema
+.Rhistory
+.RData
+.Rproj.user/
+Thumbs.db
+desktop.ini

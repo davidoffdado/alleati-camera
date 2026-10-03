@@ -1,0 +1,57 @@
+sigla,nome,coalizione
+PCI+PSI,PCI e PSI (blocco della sinistra),FALSE
+PCI,Partito Comunista Italiano,FALSE
+PSI,Partito Socialista Italiano,FALSE
+PSDI,Partito Socialista Democratico Italiano,FALSE
+PSU,Partito Socialista Unificato,FALSE
+PSIUP,Partito Socialista di Unità Proletaria,FALSE
+PDUP,Partito di Unità Proletaria per il comunismo,FALSE
+DP,Democrazia Proletaria,FALSE
+DC,Democrazia Cristiana,FALSE
+PRI,Partito Repubblicano Italiano,FALSE
+PLI,Partito Liberale Italiano,FALSE
+BN,Blocco Nazionale (liberali e qualunquisti),FALSE
+MON,Monarchici,FALSE
+MSI,Movimento Sociale Italiano,FALSE
+DN,Democrazia Nazionale,FALSE
+RAD,Radicali,FALSE
+VERDI,Verdi,FALSE
+SI,Sinistra Indipendente,FALSE
+RETE,La Rete,FALSE
+PDS,Partito Democratico della Sinistra,FALSE
+RC,Rifondazione Comunista,FALSE
+PROGR,Progressisti,FALSE
+LEGA,Lega,FALSE
+AN,Alleanza Nazionale,FALSE
+FI,Forza Italia / Popolo della Libertà,FALSE
+UDC,UDC (CCD-CDU),FALSE
+PPI,Partito Popolare Italiano,FALSE
+MARGH,La Margherita,FALSE
+DS,Democratici di Sinistra,FALSE
+SD,Sinistra Democratica,FALSE
+SDI,Socialisti Democratici Italiani,FALSE
+PDCI,Comunisti Italiani,FALSE
+RNP,Rosa nel Pugno,FALSE
+IDV,Italia dei Valori,FALSE
+PD,Partito Democratico,FALSE
+FLI,Futuro e Libertà,FALSE
+SEL,Sinistra Ecologia Libertà / Sinistra Italiana,FALSE
+LEU,Liberi e Uguali / Articolo 1-MDP,FALSE
+M5S,Movimento 5 Stelle,FALSE
+FDI,Fratelli d'Italia,FALSE
+IV,Italia Viva,FALSE
+MISTO,Gruppo misto,FALSE
+ALTRI,Altri,FALSE
+GOVERNO,Governo,FALSE
+POLO,Polo delle Libertà / del Buon Governo,TRUE
+ULIVO,L'Ulivo,TRUE
+CDL,Casa delle Libertà,TRUE
+UNIONE,L'Unione,TRUE
+CDX,Centrodestra,TRUE
+CSX,Centrosinistra,TRUE
+PRESIDENZA,Presidenza della Camera,FALSE
+NON ATTRIBUITO,Non attribuito (coalizione),FALSE
+DEM,I Democratici,FALSE
+AVS,Alleanza Verdi e Sinistra,FALSE
+AZIV,Azione-Italia Viva,FALSE
+NM,Noi Moderati,FALSE

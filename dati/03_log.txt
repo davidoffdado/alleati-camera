@@ -1,0 +1,128 @@
+Messaggio di avvertimento:
+il pacchetto 'data.table' è stato creato con R versione 4.3.3 
+deputati nominati: 23243  risolti con partito: 20628  non trovati: 1451  ambigui: 1164 
+
+eventi: 329448  righe evento-attore: 415414 
+
+quota di eventi con almeno un attore, per legislatura e tipo di attore:
+Key: <legislature>
+    legislature deputato governo gruppo maggioranza nessuno opposizione settore tutti
+          <int>    <int>   <int>  <int>       <int>   <int>       <int>   <int> <int>
+ 1:           1     2125     258      5           0    8591           0   19336   178
+ 2:           2     1017     119      9           6    2922           0    7182   134
+ 3:           3      896     107      4          12    2947           0    6616    85
+ 4:           4     1611     324     54          45    3539           0    5833    73
+ 5:           5      854     113    318          15    1387           0    3455    75
+ 6:           6      329     100    520           2    1040           0    2862    48
+ 7:           7      620      84    799           2     903           0    1401    26
+ 8:           8     2594     191   1751           3    2660           0    5317    51
+ 9:           9     1266      99   2702           4    2380           0    5943    31
+10:          10     1377      68   8427           1    3996           0    1163    76
+11:          11     1449      36   6650           2    2607           0       0    33
+12:          12      744      51   7148           3    2504           0      14   111
+13:          13     3025     192  21133           3    3995           0      45   162
+14:          14     1747     172  27195          16    3267          34       2   313
+15:          15      499      50   7666          35    1331          12       1    90
+16:          16      805     167  29525           0    3106           0       0   212
+17:          17      859     167  30570           0    2929           0       4   214
+18:          18      990     113  47630           1    3760           0      22   185
+
+eventi senza attore, per tipo:
+                 tipo     N
+               <char> <int>
+ 1:          applausi 20213
+ 2:          commenti 13076
+ 3:   congratulazioni 11515
+ 4:           ilarita  3062
+ 5:      approvazioni  1547
+ 6:          proteste   959
+ 7:      interruzioni   825
+ 8:            rumori   704
+ 9:          richiamo   670
+10:           scontro   517
+11:             grida   239
+12:          in_piedi   185
+13:         apostrofi   170
+14:          cartelli   100
+15: applausi_polemici    44
+16:         abbandono    27
+17:           diniego    11
+
+esempi di applausi con testo lungo ma senza attore riconosciuto:
+ [1] "Applausi all'esltrema sinisira"                                                              "Applausi dei deputati della Sudtiroler Volkspartei"                                         
+ [3] "Applausi all'estrema sinisira"                                                               "Applausi all'estrema sinisiTa"                                                              
+ [5] "Proteste del Relalore di minoranza Grilli Antonio"                                           "Proposta di sione assegnazione a Commisin sede legislativa"                                 
+ [7] "Applausi dei deputati della Siidtiroler Volkspartei"                                         "Applausi all'estrama sinistra"                                                              
+ [9] "Applausi all'estrema desira"                                                                 "Commenti all'estreina sinistra"                                                             
+[11] "Commenti del Viceministro dello sviluppo economico Paolo Romani"                             "Commenti del deputato lanniello"                                                            
+[13] "Applausi all'estrema simistra"                                                               "Proteste del deputaio Valensise"                                                            
+[15] "Applausi all'esitrema sinistra"                                                              "Applausi dei deputati della Sudtiroler Volkspartei"                                         
+[17] "Applausi dei deputati della Sudtiroler Volkspartei"                                          "Applausi ali'estrema sinistra"                                                              
+[19] "Vivi applausi - Molte congratu lazioni"                                                      "Commenti del relatore Manfredi"                                                             
+[21] "Nuovi, vivissimi applausi al Presidente da parte dei giornalisti della tribuna della stampa" "Applausi dei deputati del gruppo di democrazia proletarie"                                  
+[23] "Applausi all'estrema SINASITA"                                                               "Vivissimi, prolungati applausi"                                                             
+[25] "Commenti all'estrema. destra"                                                                "Commenti del Presidente Berlusconi"                                                         
+[27] "Vivi, prolungati applausi dll'estrema sinistra"                                              "Applausi dei deputati del gruppo Insieme per il Futuro"                                     
+[29] "Commenti del relatore Manfredi"                                                              "Applausi all'estreIna SINISITO"                                                             
+
+residuo non consumato nei testi con 'grupp' (top 60):
+applausi dei deputati del gruppo # [83928]
+applausi dei deputati del gruppo di # [10161]
+applausi dei deputati dei gruppi # e # [7658]
+applausi dei deputati del gruppo della # [7149]
+applausi dei deputati del gruppo del # [5976]
+applausi dei deputati del gruppo dei # [5368]
+commenti dei deputati del gruppo # [5090]
+applausi dei deputati dei gruppi di # e di # [3681]
+applausi dei deputati del gruppo # - # [3537]
+applausi dei deputati del gruppo della # , [2071]
+applausi dei deputati dei gruppi # , # e # [1807]
+applausi di deputati del gruppo # [1607]
+commenti dei deputati del gruppo di # [1441]
+applausi dei deputati del gruppo # e di deputati del gruppo # [1322]
+applausi dei deputati dei gruppi della # , e dei # [1111]
+commenti dei deputati dei gruppi # e # [1106]
+applausi dei deputati dei gruppi dei # e della # , [1055]
+proteste dei deputati del gruppo # [954]
+applausi dei deputati del gruppo # o [932]
+applausi dei deputati del gruppo # # [817]
+applausi dei deputati del gruppo # e [809]
+commenti dei deputati del gruppo della # [772]
+commenti dei deputati del gruppo dei # [752]
+commenti dei deputati dei gruppi di # e di # [656]
+applausi dei deputati dei gruppi di # , di # e della # [650]
+commenti di deputati del gruppo # [463]
+applausi dei deputati dei gruppi della # e di # [448]
+applausi dei deputati dei gruppi dei # , della # , e # - # [442]
+applausi dei deputati dei gruppi di # e della # [435]
+proteste dei deputati del gruppo della # [428]
+applausi dei deputati dei gruppi dei # e # - # [402]
+applausi dei deputati del gruppo # -l' # [397]
+applausi dei deputati del gruppo dell' # [395]
+applausi dei deputati dei gruppi # , # , # e # [369]
+applausi di deputati del gruppo di # [346]
+proteste dei deputati del gruppo di # [328]
+applausi dei deputati dei gruppi della # , di # e di # [321]
+commenti dei deputati dei gruppi dei # e della # , [310]
+applausi dei deputati dei gruppi della # e del # [298]
+applausi dei deputati dei gruppi della # , , dei # e # - # [295]
+applausi dei deputati dei gruppi del # e della # [278]
+applausi dei deputati dei gruppi di # e # [274]
+applausi dei deputati dei gruppi # e di # [268]
+applausi dei deputati dei gruppi di # , di # e del # [266]
+proteste dei deputati dei gruppi # e # [260]
+applausi dei deputati dei gruppi dei # e dei # [255]
+applausi dei deputati dei gruppi di # , di # e # - # [254]
+applausi dei deputati del gruppo # - # - # [254]
+applausi dei deputati dei gruppi di # e dei # [244]
+applausi di deputati dei gruppi # e # [236]
+applausi dei deputati dei gruppi # - # e dei # [231]
+applausi dei deputati del gruppo della # e all'estrema sinistra [230]
+commenti dei deputati dei gruppi di # , di # e della # [219]
+proteste dei deputati del gruppo del # [213]
+applausi dei deputati del gruppo # e di deputati dei gruppi # e # [211]
+applausi polemici dei deputati del gruppo # [196]
+commenti dei deputati dei gruppi di # e della # [194]
+commenti dei deputati del gruppo del # [191]
+applausi all'estrema sinistra e dei deputati del gruppo della # [182]
+applausi polemici dei deputati del gruppo di # [167]

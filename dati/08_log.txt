@@ -1,0 +1,257 @@
+Messaggio di avvertimento:
+il pacchetto 'data.table' è stato creato con R versione 4.3.3 
+anomalie pure (eventi):
+Key: <legislature>
+    legislature applauso all'avversario applauso tra opposizioni opposte
+          <int>                   <int>                            <int>
+ 1:           1                     606                               77
+ 2:           2                     191                               30
+ 3:           3                     184                               40
+ 4:           4                     378                               28
+ 5:           5                     103                               13
+ 6:           6                      58                               12
+ 7:           7                      27                                1
+ 8:           8                     158                               15
+ 9:           9                     202                               24
+10:          10                     448                               26
+11:          11                     396                              112
+12:          12                      78                                8
+13:          13                     748                              292
+14:          14                     385                                0
+15:          15                     146                               48
+16:          16                     979                              240
+17:          17                     485                              180
+18:          18                     531                               56
+    ostilità tra alleati
+                   <int>
+ 1:                  196
+ 2:                   76
+ 3:                   61
+ 4:                  131
+ 5:                   47
+ 6:                    5
+ 7:                   64
+ 8:                   22
+ 9:                   56
+10:                   36
+11:                   31
+12:                   51
+13:                   25
+14:                  122
+15:                    8
+16:                   50
+17:                   15
+18:                  104
+APPLAUSI tra partiti diversi: % per tipo di coppia
+Key: <legislature>
+    legislature con astenuti tra alleati tra opposizioni trasversale
+          <int>        <num>       <num>           <num>       <num>
+ 1:           1            0          39               7          54
+ 2:           2            4          43               8          45
+ 3:           3            1          38              11          50
+ 4:           4            1          25              18          57
+ 5:           5            4          15              51          31
+ 6:           6            4          27              19          50
+ 7:           7           27           7              49          18
+ 8:           8            0          17              39          45
+ 9:           9            0           8              72          20
+10:          10            0          11              68          20
+11:          11           11          19              37          33
+12:          12           34          30              18          18
+13:          13            0          21              61          18
+14:          14            0          25              66           9
+15:          15            0          56              33          11
+16:          16            0          30              40          30
+17:          17            0           5              46          48
+18:          18            0          51              34          16
+
+OSTILITA tra partiti diversi: % per tipo di coppia
+Key: <legislature>
+    legislature con astenuti tra alleati tra opposizioni trasversale
+          <int>        <num>       <num>           <num>       <num>
+ 1:           1            0           3               6          92
+ 2:           2            2           3               9          85
+ 3:           3            4           3              14          79
+ 4:           4            1           5              15          79
+ 5:           5            3           3              25          70
+ 6:           6            1           1              38          60
+ 7:           7           26           8               7          59
+ 8:           8            0           1              38          61
+ 9:           9            0           3              31          65
+10:          10            0           4              21          76
+11:          11           11           2              36          51
+12:          12           51           7               5          37
+13:          13            0           1              28          71
+14:          14            0           3               2          96
+15:          15            0           1               4          95
+16:          16            0           2               3          94
+17:          17            0           1              25          74
+18:          18            0           4               9          87
+
+PESO DELLE ANOMALIE PURE (% delle reazioni tra partiti diversi):
+Key: <legislature>
+    legislature applauso all'avversario applauso tra opposizioni opposte ostilità tra alleati
+          <int>                   <num>                            <num>                <num>
+ 1:           1                    51.7                              6.8                  2.5
+ 2:           2                    42.4                              7.5                  3.3
+ 3:           3                    43.3                             10.7                  3.2
+ 4:           4                    54.3                              3.8                  4.9
+ 5:           5                    28.2                              3.3                  3.1
+ 6:           6                    36.9                              7.0                  0.9
+ 7:           7                    13.6                              0.5                  7.4
+ 8:           8                    37.6                              3.0                  0.9
+ 9:           9                    15.5                              1.6                  3.4
+10:          10                    12.2                              0.6                  3.3
+11:          11                    18.3                              5.2                  2.2
+12:          12                     4.5                              0.4                  5.7
+13:          13                    11.7                              4.1                  0.8
+14:          14                     3.5                              0.0                  2.0
+15:          15                     5.9                              2.3                  0.7
+16:          16                    17.3                              3.9                  1.6
+17:          17                    20.1                              8.1                  0.7
+18:          18                     9.2                              0.9                  3.7
+
+COPPIE ANOMALE (almeno 5 interventi):
+
+-- applauso all'avversario --
+    legislature     chi   a_chi interventi
+          <int>  <char>  <char>      <int>
+ 1:          16     FLI      FI        291
+ 2:           4     PCI     PSI        260
+ 3:          16      PD      FI        179
+ 4:           1 PCI+PSI      DC        156
+ 5:          13    PDCI      RC        153
+ 6:          16     IDV      FI        101
+ 7:           1      DC PCI+PSI         95
+ 8:           1      DC      BN         92
+ 9:          17     SEL      PD         85
+10:          16     UDC      FI         76
+11:          10   VERDI      DC         70
+12:          11    LEGA      DC         69
+13:          18     FDI     M5S         63
+14:          17      PD     SEL         58
+15:          10     RAD     PSI         57
+16:          16      FI     UDC         57
+17:          18     FDI      PD         57
+18:          14      DS      FI         53
+19:          14   MARGH      FI         53
+20:          16      FI      PD         51
+    legislature     chi   a_chi interventi
+
+-- applauso tra opposizioni opposte --
+    legislature     chi  a_chi interventi
+          <int>  <char> <char>      <int>
+ 1:          16     UDC     PD        139
+ 2:          13      FI    UDC         68
+ 3:          13      AN    UDC         53
+ 4:          16      PD    UDC         50
+ 5:          11      RC   LEGA         42
+ 6:          13     UDC     FI         42
+ 7:           1 PCI+PSI   PSDI         31
+ 8:          17     SEL    M5S         30
+ 9:          17     M5S    SEL         27
+10:          17     M5S     FI         27
+11:          16     IDV    UDC         26
+12:           1 PCI+PSI     BN         20
+13:          13      FI     RC         20
+14:          13    LEGA    UDC         19
+15:          13    LEGA     RC         19
+16:          15     PRI     FI         19
+17:           3 PCI+PSI   PSDI         18
+18:          13      AN     RC         18
+19:          17     M5S   LEGA         18
+20:          18      PD     FI         17
+    legislature     chi  a_chi interventi
+
+-- ostilità tra alleati --
+    legislature    chi  a_chi interventi
+          <int> <char> <char>      <int>
+ 1:           1     DC    PRI         60
+ 2:           1     DC   PSDI         60
+ 3:           4     DC    PSI         50
+ 4:          14     AN     FI         36
+ 5:           3     DC   PSDI         29
+ 6:           4    PSI     DC         25
+ 7:          18     PD   LEGA         25
+ 8:           2     DC   PSDI         24
+ 9:           5     DC    PSU         21
+10:          18   LEGA     PD         21
+11:           1     DC     BN         20
+12:          14     AN   LEGA         17
+13:          12     FI   LEGA         16
+14:          14   LEGA     FI         16
+15:          18   LEGA    M5S         16
+16:           2     DC    MON         15
+17:           7    PCI     DC         15
+18:          12     AN   LEGA         15
+19:          14   LEGA     AN         15
+20:           9     DC    PSI         14
+    legislature    chi  a_chi interventi
+
+episodi salvati: 8405 
+
+esempi - applauso all'avversario (i più intensi prima):
+          date        governo     chi   a_chi                 oratore                                                                                   txt
+        <Date>         <char>  <char>  <char>                  <char>                                                                                <char>
+ 1: 1949-03-12   De Gasperi V      DC PCI+PSI      LIONELLO MATTEUCCI                                                    Vivi applausi al centro e a destra
+ 2: 1948-09-14   De Gasperi V PCI+PSI      DC              Government                                               Vivissimi applausi all'estrema sinistra
+ 3: 1975-05-06        Moro IV      DC     PCI            MARIO TAMINI                                                          Vivissimi applausi al centro
+ 4: 1948-07-16   De Gasperi V PCI+PSI      DC          MATTEO TONENGO                                               Vivissimi applausi all'estrema sinistra
+ 5: 1958-07-19     Fanfani II PCI+PSI    PSDI LUCIANO GRANZOTTO BASSO                                                         Vivissimi applausi a sinistra
+ 6: 1952-12-12 De Gasperi VII PCI+PSI      DC           EUGENIO GATTO                                               Vivissimi applausi all'estrema sinistra
+ 7: 1992-04-30  Andreotti VII    LEGA      DC           ALBERTO ROSSI           Vivi, prolungati, applausi dei deputati del gruppo della lega nord Commenti
+ 8: 1950-06-06  De Gasperi VI PCI+PSI      DC      GASPARE PIGNATELLI                                               Vivissimi applausi all'estrema sinistra
+ 9: 1952-01-30 De Gasperi VII    PSDI      DC  GIUSEPPE MARIA BETTIOL Vivissimi applausi all'indirizzo del deputato Calosso, che in questo momento entra in
+10: 1948-09-22   De Gasperi V      DC     PSI              Government                                                               Vivi applausi al centro
+11: 1958-06-18           Zoli      DC     PCI       PAOLO MARIO ROSSI                                             Vivissimi applausi al centro e a sinistra
+12: 1952-10-16 De Gasperi VII      DC      BN      ALBERTO GIOVANNINI                                               Vivissimi applausi al centro e a destra
+13: 1948-06-25   De Gasperi V PCI+PSI      DC          VITO MONTERISI                                                    Vivi applausi all'estrema sinistra
+14: 1992-04-30  Andreotti VII    LEGA      DC           ALBERTO ROSSI           Vivi, prolungati, applausi dei deputati del gruppo della lega nord Commenti
+15: 1995-10-24           Dini      RC   PROGR         MASSIMO D'ALEMA Vivi, prolungati applausi dei deputati dei gruppi progresisti-federativo, della lega 
+16: 1949-07-14   De Gasperi V PCI+PSI      DC         MATTEO RESCIGNO Vivissimi applausi all'estrema sinistra satuto dell'ex-partito fascista per convincer
+17: 1948-10-25   De Gasperi V      DC PCI+PSI         OTTAVIO PASTORE                                              Vivissimi ap'plausi al centro e a destra
+18: 1949-03-09   De Gasperi V      DC PCI+PSI    GIUSEPPE DI VITTORIO                                               Vivissimi applausi al centro e a destra
+
+esempi - applauso tra opposizioni opposte (i più intensi prima):
+          date        governo     chi  a_chi                  oratore                                                                                   txt
+        <Date>         <char>  <char> <char>                   <char>                                                                                <char>
+ 1: 1952-12-14 De Gasperi VII PCI+PSI   PSDI       GAETANO PIERACCINI                                                    Vivi applausi all'estrema sinistra
+ 2: 1957-09-19           Zoli PCI+PSI    PRI         LUDOVICO CAMANGI                                                              Vivi applausi a sinistra
+ 3: 1996-07-18        Prodi I     UDC   LEGA        GIUSEPPE BICOCCHI Vivi applausi dei deputati dei gruppi di forza Italia, di alleanza nazionale e del CC
+ 4: 1948-10-06   De Gasperi V PCI+PSI    MON TOMMASO LEONE MARCHESANO                                                         Applausi all'estrema sinistra
+ 5: 1959-12-16       Segni II PCI+PSI   PSDI      GIANCARLO MATTEOTTI                                                              Vivi applausi a sinistra
+ 6: 1950-02-09  De Gasperi VI PCI+PSI    MON TOMMASO LEONE MARCHESANO                                                        Applausi alla estrema sinistra
+ 7: 1951-09-26 De Gasperi VII PCI+PSI   PSDI       GAETANO PIERACCINI                                                         Applausi all'estrema sinistra
+ 8: 1951-03-15  De Gasperi VI PCI+PSI     BN          ANTONIO CIFALDI                                            Applausi a sinistra e all'estrema sinistra
+ 9: 1966-05-17       Moro III     MSI    PCI          GIOVANNI GRILLI                                                                Vivi applausi a destra
+10: 1948-11-17   De Gasperi V PCI+PSI    MON TOMMASO LEONE MARCHESANO                                                         Applausi all'estrema sinistra
+11: 1951-07-10  De Gasperi VI PCI+PSI     BN           GIUSEPPE NITTI                                                         Applausi all'estrema sinistra
+12: 1950-02-02  De Gasperi VI PCI+PSI    MON TOMMASO LEONE MARCHESANO                                                         Applausi all'estrema sinistra
+13: 1951-10-22 De Gasperi VII PCI+PSI   PSDI       UMBERTO ZANFAGNINI                                            Applausi a sinistra e all'estrema sinistra
+14: 1964-12-10        Moro II     PCI    MSI            TULLIO ABELLI                                                    Vivi applausi all'estrema sinistra
+15: 1957-06-26           Zoli PCI+PSI    PRI            CINO MACRELLI                                                              Vivi applausi a sinistra
+16: 1973-01-16   Andreotti II     MSI    PSI         SALVATORE FRASCA                                                                Vivi applausi a destra
+17: 1997-11-26        Prodi I     UDC     FI           ALFREDO BIONDI Vivi, prolungati applausi dei deputati dei gruppi forza, Italia, alleanza nazionale, 
+18: 1950-02-04  De Gasperi VI PCI+PSI    MSI        GUIDO RUSSO PEREZ                                                    Vivi applausi all'estrema sinistra
+
+esempi - ostilità tra alleati (i più intensi prima):
+          date       governo    chi  a_chi              oratore                                                                                   txt
+        <Date>        <char> <char> <char>               <char>                                                                                <char>
+ 1: 1992-07-22       Amato I     DC    PLI      VITTORIO SGARBI                                        Vive proteste dei deputati del gruppo della DC
+ 2: 1988-02-03         Goria     DC   PSDI        FILIPPO CARIA                                                               Vive proteste al centro
+ 3: 1993-12-16        Ciampi     DC    PSI    ANGELO TIRABOSCHI            Vivi commenti dei deputati dei gruppi della DC e di rifondazione comunista
+ 4: 1962-01-19   Fanfani III     DC   PSDI  GIANCARLO MATTEOTTI                                                               Vive proteste al centro
+ 5: 1971-02-03       Colombo     DC   PSDI           Government                                                    Vive proteste al centro e a destra
+ 6: 1994-12-21  Berlusconi I     FI   LEGA        UMBERTO BOSSI                                 Vivi commenti dei deputati del gruppo di forza Italia
+ 7: 1992-07-22       Amato I     DC    PLI      VITTORIO SGARBI                                        Vive proteste dei deputati del gruppo della DC
+ 8: 1966-04-29      Moro III     DC    PSI FRANCESCO CACCIATORE                                                               Vive proteste al centro
+ 9: 1994-07-21  Berlusconi I     FI   LEGA  SERGIO CASTELLANETA                            Vivissime proteste dei deputati del gruppo di forza Italia
+10: 1990-04-19  Andreotti VI    PSI     DC         LUCIANO RADI Vive proteste dei deputati del gruppo del PSI - Numerosi deputati segnalano il mancat
+11: 1994-12-21  Berlusconi I  AN+FI   LEGA        UMBERTO BOSSI Vivi commenti ed applausi polemici dei deputati dei gruppi di forza Italia e di allea
+12: 1967-10-17      Moro III     DC    PSI   RAFFAELE DI PRIMIO                                                             Vivaci proteste al centro
+13: 1994-11-18  Berlusconi I   LEGA     AN      MIRKO TREMAGLIA                                 Vivi commenti dei deputati del gruppo della lega nord
+14: 1988-02-18         Goria    PRI     DC       VINCENZO RUSSO                                                   Vive proteste del deputato Gunnella
+15: 2004-02-11 Berlusconi II     AN     FI       CARLO TAORMINA                           Vivi commenti dei deputati del gruppo di Alleanza nazionale
+16: 1994-02-23        Ciampi     DC    PSI          FRANCO PIRO                                                  Vivi commenti del deputato Baccarini
+17: 1967-05-19      Moro III     DC    PSI LUCIO MARIO LUZZATTO                                                               Vive proteste al centro
+18: 1978-12-16  Andreotti IV DC+PCI    PRI         BIAGIO PINTO                            Vive proteste al centro, a sinistra e all'estrema sinistra

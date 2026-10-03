@@ -1,0 +1,2 @@
+Messaggio di avvertimento:
+il pacchetto 'data.table' è stato creato con R versione 4.3.3 

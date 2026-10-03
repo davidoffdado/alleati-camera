@@ -1,0 +1,88 @@
+Messaggio di avvertimento:
+il pacchetto 'data.table' è stato creato con R versione 4.3.3 
+1948-1972 - annotazioni di reazione scartate per le cifre: 45 
+                                                                                         ann
+                                                                                      <char>
+1:                                                                       (Applausi 4 destra)
+2:                                                           (Proteste al centro e 4 destra)
+3:                                                  (Applausi - Con<< La Camera fa voti: 1°)
+4:                                                           (Applausi al centro e 4 destra)
+5:                                                                     (Commenti 4 sinistra)
+6:                                                                  (Interruzioni 1 smistra)
+7: ( Applausi a 93. troppo anche qui   sinistra e all'estrema sinistra - Commenti al centro)
+8:     (Applausi a destra e al Vada in 4 Del resto, non e nello spirito cattolico  sinistra)
+       N
+   <int>
+1:     5
+2:     2
+3:     2
+4:     2
+5:     2
+6:     2
+7:     1
+8:     1
+1948-1972 298694 annotazioni
+1972-1992 - annotazioni di reazione scartate per le cifre: 12 
+                                                                                                                                                                    ann
+                                                                                                                                                                 <char>
+1:                                                                                                              (Applausi al centro, 4 sinistra e all'estrema sinistra)
+2:                                                                                       (Commenti Chiedo se faa #11. ani ss UL ESCI CTILA di parlare contro. sinistra)
+3:                                                                                                                                 (Applaust 4 destra -Congratulazioni)
+4:                                                                                                                                     (Proteste 4a/l'estrema sinistra)
+5:                                                                                  (Applausi dei deputati del grupCerto, il CISA ha i suoi problemi di or| 9 7ad:cale)
+6:                                                                                                                                     (Applausi 4! l'estrema sinistra)
+7: (Applausi all'estrema sinistra -     'foro A 1 % LIE CITA dI 7 IT nire la Tilorina VO i1Ccoradaro, con i do - e cioe che la magistratura italiana | Congratulazioni)
+8:                                                                                                   (Applausi al cendamenti presentati, il decreto-legge n. 288 ' iro)
+       N
+   <int>
+1:     1
+2:     1
+3:     1
+4:     1
+5:     1
+6:     1
+7:     1
+8:     1
+1972-1992 324531 annotazioni
+1992-2006 - annotazioni di reazione scartate per le cifre: 8 
+                                                                                                                                                                                                                       ann
+                                                                                                                                                                                                                    <char>
+1:                                                                                                                                              (Protesta di dipendenti delle imprese di pulizia ferroviaria - n. 3-00683)
+2:                                                                                                                                                         (Applausi dei depu. tati del gruppo di alleanza nazionale-MSI1)
+3:                                                                                                                                                                                                              (Comment1)
+4: (Commenti dei deputati dei gruppi di Forza Italia e di Alleanza nazionale - Una voce:, 235, Nom., Tab. A.47, 492, 491, 1, 246, 216, 275, 35, <<Ancora>>! -, Resp., 236, Nom., Tab. A.48, 505, 505, 253, 226, 279, 35, )
+5:                                                (Applausi, 104, Nom., em. 21.157, 448, 448, 225, 179, 269, 23, Resp., dei deputati del gruppo della Lega nord Padania - Commenti dei deputati di Rifondazione comunista)
+6:                                                                                                                                                                      (Proteste dei dipendenti di Alitalia - n. 3-02337)
+7:                                                                                                                                                                     (Proteste dei dipendenti di Alitalia -, n. 3-02337)
+       N
+   <int>
+1:     2
+2:     1
+3:     1
+4:     1
+5:     1
+6:     1
+7:     1
+1992-2006 310980 annotazioni
+2006-2022 - annotazioni di reazione scartate per le cifre: 18 
+                                                                                                                                                                                                                                                                                      ann
+                                                                                                                                                                                                                                                                                   <char>
+1:                                                                                                                                                                                                                                            (Applausi dei deputati del gruppo 5 Stelle)
+2:                                                                                                                                                                                                                             (Protesta attuata dagli avvocati di Piacenza - n. 2-00229)
+3:                                                (Applausi dei deputati dei gruppi Popolo della Liberta e Lega Nord Padania - Dai banchi del gruppo dell'Italia dei Valori si grida: <<P2, P2!>>; l'onorevole Barbato espone un fazzoletto recante la scritta: <<Giorgio non firmare!>>)
+4: (Applausi dei deputati dei gruppi Popolo della Liberta, Lega Nord Padania e Iniziativa Responsabile - Congratulazioni - Dai banchi del gruppo Partito Democratico si grida: P2, P2, P2! - Alcuni deputati del gruppo Partito Democratico esibiscono copia della Costituzione italiana)
+5:                                                                                                                    (Applausi dei deputati del gruppo Italia dei Valori - L'onorevole Barbato espone nuovamente un cartello recante la scritta: <<+ 1886 giovani carabinieri - casta>>)
+6:                                                                                                     (Applausi dei deputati del gruppo Sinistra Ecologia Liberta - Deputati del gruppo Sinistra Ecologia Liberta espongono cartelli recanti la scritta: <<Quota 96. Decreto subito !>>)
+7:                                                                                                                                                                                                                                           (Applausi dei deputati dei gruppi Sel e M5S)
+8:                                                                                                                                                                                                                (Applausi dei deputati dei gruppi Sel e M5S e della deputata Polverini)
+       N
+   <int>
+1:     2
+2:     1
+3:     1
+4:     1
+5:     1
+6:     1
+7:     1
+8:     1
+2006-2022 288673 annotazioni

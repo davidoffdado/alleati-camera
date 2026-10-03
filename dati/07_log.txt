@@ -1,0 +1,60 @@
+Messaggi di avvertimento:
+1: il pacchetto 'data.table' è stato creato con R versione 4.3.3 
+2: il pacchetto 'jsonlite' è stato creato con R versione 4.3.3 
+partiti senza seggi in tabella (stima dai deputati che parlano):
+Key: <legislature, p>
+    legislature      p stimati
+          <int> <char>   <int>
+ 1:           1    PSI       3
+ 2:           8     SI      NA
+ 3:           9   PDUP      NA
+ 4:          12    MSI       1
+ 5:          12   POLO      NA
+ 6:          13    DEM       4
+ 7:          13    IDV       1
+ 8:          13   PDCI       2
+ 9:          13    PRI       2
+10:          13    SDI       1
+11:          13  ULIVO      NA
+12:          13  VERDI      11
+13:          14    CDL      NA
+14:          14   PDCI       9
+15:          14    PRI       1
+16:          14    PSI       2
+17:          14     RC      11
+18:          14    RNP      NA
+19:          14    SDI       7
+20:          14  VERDI       7
+21:          15     DS       4
+22:          15     PD       1
+23:          15    PSI       1
+24:          15     SD      NA
+25:          16    PLI      NA
+26:          16    PRI       1
+27:          17    PSI      NA
+28:          17    UDC       7
+29:          18    PSI      NA
+30:          18     RC       2
+    legislature      p stimati
+
+scritto viz/emiciclo.json: 173846 byte
+
+seggi totali per legislatura:
+Key: <.>
+        .     1     2     3     4     5     6     7     8     9    10    11
+   <char> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
+1:      .   573   589   596   630   625   629   629   629   630   631   630
+      12    13    14    15    16    17    18
+   <int> <int> <int> <int> <int> <int> <int>
+1:   630   629   630   624   630   630   630
+
+archi per legislatura e relazione:
+Key: <relazione>
+      relazione     1     2     3     4     5     6     7     8     9    10
+         <char> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
+1: approvazione    11    12    12    15    12    10     5    25    34    71
+2:     ostilita    25    31    32    36    34    14    24    34    41    41
+      11    12    13    14    15    16    17    18
+   <int> <int> <int> <int> <int> <int> <int> <int>
+1:    94    36    53    81    55    25    35    36
+2:    42    25    46    57    40    20    30    26
