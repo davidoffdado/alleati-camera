@@ -41,17 +41,8 @@
   .apertura { max-width: 680px; margin: 0 auto; padding: 64px 16px 0; }
   .apertura p { margin: 0 0 1.1em; }
   h1 { font-family: "Fraunces", Georgia, serif; font-weight: 800; font-size: clamp(2.6rem, 9vw, 4.6rem); line-height: 1.05; letter-spacing: -0.02em; margin: 24px 0 28px; text-wrap: balance; }
-  /* "alleati" in un blocco pieno, "litigi" nel colore dei litigi con una sottolineatura a zigzag */
-  .t-alleati { display: inline-block; background: var(--ink); color: var(--page); padding: 0 .14em .06em; border-radius: .08em; transform: rotate(-2deg); }
-  .t-litigano { display: inline-block; position: relative; color: var(--ost); }
-  .t-litigano::after { content: ""; position: absolute; left: .02em; right: .02em; bottom: -.1em; height: .2em;
-    background: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 20 8%27%3E%3Cpath d=%27M0 6 L5 2 L10 6 L15 2 L20 6%27 fill=%27none%27 stroke=%27%23eb6834%27 stroke-width=%272.4%27/%3E%3C/svg%3E") repeat-x 0 0 / .4em 100%; }
-  /* una scossa sola all'arrivo, come un battibecco */
-  @media (prefers-reduced-motion: no-preference) {
-    .t-litigano { animation: scossa .5s ease-in-out .6s 2; }
-    @keyframes scossa { 0%, 100% { transform: none; } 20% { transform: translateX(-.03em) rotate(-2deg); } 40% { transform: translateX(.03em) rotate(2deg); }
-                        60% { transform: translateX(-.02em) rotate(-1deg); } 80% { transform: translateX(.02em) rotate(1deg); } }
-  }
+  /* "litigi" e "alleati" sottolineati */
+  .t-alleati, .t-litigano { text-decoration: underline var(--ost); text-decoration-thickness: .07em; text-underline-offset: .12em; text-decoration-skip-ink: auto; }
   .kicker { color: var(--ink-2); font-size: .95rem; }
 
   /* timeline completa: all'inizio (scorre via) e di nuovo alla fine */
@@ -180,12 +171,12 @@
 <section class="apertura">
   <p>La storia della Repubblica italiana è caratterizzata da una <mark class="pennarello">forte instabilità degli esecutivi</mark>: in media, un governo dura poco più di un anno. L'attuale esecutivo in carica, guidato da Giorgia Meloni, si attesta come il più duraturo, avendo superato i 1412 giorni di Silvio Berlusconi, mentre, al lato opposto, c'è Amintore Fanfani che fu alla carica di un governo durato 11 giorni.</p>
   <p>Alla base di molte crisi di governo c'è la <mark class="pennarello">frammentazione partitica</mark>: un numero elevato di partiti costringe a formare coalizioni complesse e fragili, che non sempre riescono a reggere il peso del potere. Correnti interne e distanze ideologiche tra gli alleati aprono crepe nella maggioranza, finché l'alleanza non si rompe e il governo cade.</p>
-  <p>Partendo da queste informazioni, mi sono posto una domanda: in Italia <mark class="pennarello">gli alleati di governo vanno d'accordo?</mark></p>
+  <p>Partendo da queste informazioni, mi sono posto una domanda: in Italia, <mark class="pennarello">gli alleati di governo vanno d'accordo?</mark></p>
 </section>
 
 <header class="intro">
   <h1>I <span class="t-litigano">litigi</span> tra gli <span class="t-alleati">alleati</span> di governo</h1>
-  <p>Governano insieme, votano insieme la fiducia. E poi, in aula, si contestano. I resoconti stenografici della Camera, dal 1948 al 2022, registrano <span id="n-litigi">1.047</span> volte in cui un partito della maggioranza ha protestato, rumoreggiato o interrotto un proprio alleato.</p>
+  <p>Governano insieme e votano insieme la fiducia, ma in aula si contestano lanciando frecciatine, accusandosi o abbandonando l'aula durante un loro discorso. Ripercorrere la storia della Camera dei Deputati, dal 1948 al 2022, ci mostra <mark class="pennarello" id="n-litigi">1.047</mark> eventi in cui un partito della maggioranza ha protestato, rumoreggiato o interrotto un proprio alleato.</p>
 </header>
 
 <div class="tl" id="tl-inizio" aria-label="Timeline dei litigi tra alleati, 1948-2022">
@@ -325,7 +316,8 @@ const itFmt = d3.timeFormatLocale({ dateTime: "%A %e %B %Y, %X", date: "%d/%m/%Y
   months: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
   shortMonths: ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"] }).format;
 const L = DATI.litigi.map(d => ({ ...d, t: parse(d.data) }));
-document.getElementById("n-litigi").textContent = L.length.toLocaleString("it-IT");
+const nLitigi = document.getElementById("n-litigi");
+if (nLitigi) nLitigi.textContent = L.length.toLocaleString("it-IT");
 document.getElementById("n-settore").textContent = L.filter(d => d.fonte === "settore").length.toLocaleString("it-IT");
 document.getElementById("n-tot").textContent = L.length.toLocaleString("it-IT");
 const G = DATI.governi.map(g => ({ ...g, a: parse(g.inizio), b: parse(g.fine) }));
