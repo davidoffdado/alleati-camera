@@ -45,6 +45,20 @@
   .t-alleati, .t-litigano { text-decoration: underline var(--ost); text-decoration-thickness: .07em; text-underline-offset: .12em; text-decoration-skip-ink: auto; }
   .kicker { color: var(--ink-2); font-size: .95rem; }
 
+  /* nota metodologica: blocco nero a tutta larghezza, in fondo alla pagina */
+  .metodo { background: #000; color: #d6d5cf; margin-top: 96px; padding: 72px 16px 88px; font-size: .95rem; }
+  .metodo-in { max-width: 680px; margin: 0 auto; }
+  .metodo h2 { font-family: "Fraunces", Georgia, serif; font-weight: 800; font-size: clamp(1.9rem, 4.4vw, 2.5rem); line-height: 1.1; color: #fff; margin: 0 0 32px; }
+  .metodo h3 { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .75rem; font-weight: 600; letter-spacing: .08em;
+               text-transform: uppercase; color: var(--ost); margin: 36px 0 10px; }
+  .metodo p { margin: 0 0 1em; }
+  .metodo b { color: #fff; font-weight: 600; }
+  .metodo a { color: #fff; text-decoration: underline; text-decoration-color: var(--ost); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .metodo a:hover { background: rgba(235,104,52,0.35); }
+  /* col tema scuro la pagina è già quasi nera: un filo separa la nota */
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .metodo { border-top: 1px solid #2c2c2a; } }
+  :root[data-theme="dark"] .metodo { border-top: 1px solid #2c2c2a; }
+
   /* timeline completa: all'inizio (scorre via) e di nuovo alla fine */
   .tl { padding: 24px 16px 4px; }
   .tl-in { max-width: 1100px; margin: 0 auto; }
@@ -98,12 +112,22 @@
   /* passi senza scena (Camera del 1948 e di oggi): solo testo */
   /* passi senza scena: paragrafi in colonna centrata, sotto l'emiciclo */
   .passo { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; scroll-margin-top: 250px; }
-  .passo p { width: 100%; max-width: 680px; margin: 0 0 1.1em; font-size: 1.1rem; }
+  .passo p, .chiusura p { width: 100%; max-width: 680px; margin: 0 0 1.1em; font-size: 1.1rem; }
   .zoom { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin: 6px 0 2px; }
   .zoom button { font: inherit; font-weight: 600; min-width: 30px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border);
                  background: var(--surface); color: var(--ink); cursor: pointer; }
   .zoom button:disabled { opacity: .4; cursor: default; }
   #zoom-stato { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  /* ricerca nella timeline finale */
+  .cerca { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 12px 0 4px; font-size: 14px; color: var(--ink-2); }
+  .cerca input { font: inherit; color: var(--ink); background: var(--surface); width: min(100%, 340px);
+                 padding: 7px 11px; border: 1px solid var(--ink); border-radius: 6px; }
+  #cerca-esito b { color: var(--ink); }
+  /* paragrafo di chiusura: stesso respiro dei passi tra le scene, poi subito il grafico */
+  .chiusura { max-width: 712px; margin: 0 auto; padding: 9vh 16px 0; }
+  .chiusura [data-cerca] { cursor: pointer; }
+  /* prima che arrivino dalle scene, i pallini della timeline finale non si vedono */
+  #tl-fine svg.vuota circle { visibility: hidden; }
   /* ---- scene come dialogo: battuta dell'oratore, reazione dell'aula dal resoconto */
   .scena .data { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .75rem; font-weight: 600; letter-spacing: .08em;
                  text-transform: uppercase; color: var(--ost); }
@@ -176,17 +200,10 @@
 
 <header class="intro">
   <h1>I <span class="t-litigano">litigi</span> tra gli <span class="t-alleati">alleati</span> di governo</h1>
-  <p>Governano insieme e votano insieme la fiducia, ma in aula si contestano lanciando frecciatine, accusandosi o abbandonando l'aula durante un loro discorso. Ripercorrere la storia della Camera dei Deputati, dal 1948 al 2022, ci mostra <mark class="pennarello" id="n-litigi">1.047</mark> eventi in cui un partito della maggioranza ha protestato, rumoreggiato o interrotto un proprio alleato.</p>
+  <p>Governano insieme e votano insieme la fiducia, ma in aula si contestano lanciando frecciatine, accusandosi o abbandonando l'aula durante un loro discorso. Ripercorrere la storia della Camera dei Deputati, dal 1948 al 2022, ci mostra <mark class="pennarello" id="n-litigi">1047 </mark> eventi in cui un partito della maggioranza ha protestato, rumoreggiato o interrotto un proprio alleato. Andiamo a vederne alcuni.</p>
 </header>
 
-<div class="tl" id="tl-inizio" aria-label="Timeline dei litigi tra alleati, 1948-2022">
-  <div class="tl-in">
-    <div class="tl-head"><span><b>1948–2022</b> · tutti i governi</span><span class="tl-conta"></span></div>
-    <svg></svg>
-  </div>
-</div>
-
-<p class="ponte">Ogni pallino è uno di questi momenti. Eccone alcuni tra i più netti, governo per governo: in alto, com'era composta la Camera in quel momento e chi governava insieme.</p>
+<p class="ponte">Questo è l'emiciclo del Parlamento e vi mostrerà, mano a mano che scorrete l'articolo, com'era composta la Camera in quel momento storico e chi governava insieme. Inizia rappresentando la seduta nel 1948 e si conclude con quella del 2022.</p>
 
 <div class="storia">
   <div class="aula" id="aula" aria-label="Composizione della Camera">
@@ -206,9 +223,17 @@
   <main class="scene" id="scene"></main>
 </div>
 
+<section class="chiusura">
+  <p>Quelle viste sopra sono solamente alcune delle volte in cui gli alleati se le sono date in aula, ma nel grafico successivo ci sono tutte quelle che abbiamo rintracciato: prova a cercare un politico, un partito o un anno e passa sopra ogni evento per leggere cosa annotarono gli stenografi.</p>
+</section>
 <div class="tl" id="tl-fine" aria-label="Timeline completa dei litigi tra alleati">
   <div class="tl-in">
     <div class="tl-head"><span><b>Tutti i litigi tra alleati</b> · 1948–2022</span><span class="tl-conta"></span></div>
+    <div class="cerca">
+      <input type="search" id="cerca" list="cerca-voci" placeholder="Cerca un politico, un partito o un anno" aria-label="Cerca un politico, un partito o un anno" autocomplete="off">
+      <datalist id="cerca-voci"></datalist>
+      <span id="cerca-esito" role="status"></span>
+    </div>
     <div class="zoom">
       <button type="button" id="zoom-piu" aria-label="Ingrandisci">+</button>
       <button type="button" id="zoom-meno" aria-label="Riduci">−</button>
@@ -220,8 +245,26 @@
   </div>
 </div>
 
-<footer class="outro">
-  <p class="kicker">Ogni pallino è una reazione ostile (proteste, commenti, rumori, interruzioni, grida, apostrofi) di un partito della maggioranza durante l'intervento di un alleato, esclusi gli interventi con oratore di attribuzione dubbia e le reazioni a cui partecipa anche il partito dell'oratore. Fino agli anni Ottanta molte reazioni sono annotate solo per settore dell'aula («proteste al centro», «rumori a sinistra») e il partito che reagisce è dedotto dal settore: è il caso di <span id="n-settore"></span> litigi su <span id="n-tot"></span>, la cui attribuzione è più incerta di quella dei litigi in cui il resoconto nomina un gruppo o un deputato. La densità dei pallini dipende anche da come gli stenografi annotavano le reazioni, che cambia nel tempo. Foto e loghi da Wikimedia Commons: le foto sono ritagliate e convertite in bianco e nero; i loghi compaiono quando a reagire è un gruppo e non un singolo deputato. Autori e licenze sotto ogni scena.</p>
+<footer class="metodo">
+  <div class="metodo-in">
+    <h2>Nota metodologica</h2>
+
+    <h3>Le fonti</h3>
+    <p>I dati vengono dall'<b>ItaParlCorpus</b>, la raccolta dei resoconti stenografici delle sedute della Camera dei deputati dal 1948 al 2022 costruita da Joshua Cova (Max Planck Institute for the Study of Societies): oltre 2,4 milioni di interventi, ognuno con data, oratore e gruppo parlamentare. Il corpus è descritto nell'articolo <a href="https://www.cambridge.org/core/journals/italian-political-science-review-rivista-italiana-di-scienza-politica/article/new-database-for-italian-parliamentary-speeches-introducing-the-itaparlcorpus-dataset/B2B70F700901C6A8C7D4F2D51590AEDE" target="_blank" rel="noopener">A new database for Italian parliamentary speeches: introducing the ItaParlCorpus dataset</a>, pubblicato nel 2025 sull'Italian Political Science Review, ed è scaricabile liberamente da <a href="https://doi.org/10.7910/DVN/KUARWD" target="_blank" rel="noopener">Harvard Dataverse</a>. Le citazioni delle scene si possono ritrovare nei resoconti pubblicati sul <a href="https://www.camera.it" target="_blank" rel="noopener">sito della Camera</a>.</p>
+
+    <h3>Come abbiamo trovato le reazioni</h3>
+    <p>Nei resoconti gli stenografi annotano tra parentesi quello che succede in aula: «(Vivissime proteste dei deputati del gruppo di Forza Italia)», «(Proteste al centro)», «(Proteste del deputato Fortuna)». Abbiamo estratto tutte le annotazioni tra parentesi, circa 1,2 milioni, le abbiamo divise in singoli eventi e le abbiamo classificate per tipo (applausi, proteste, commenti, rumori, interruzioni…) con regole testuali, correggendo gli errori di riconoscimento del testo più frequenti nei resoconti più vecchi.</p>
+    <p>Per ogni evento abbiamo poi individuato <b>chi reagisce</b>, cioè un gruppo, un deputato nominato o un settore dell'aula, e <b>a chi</b>: l'oratore dell'intervento in cui compare l'annotazione. Quando il resoconto indica solo un settore, il partito è stato dedotto soltanto dove la corrispondenza, verificata sugli applausi, è netta: il centro è la DC, l'estrema sinistra il PCI e, dalla IV legislatura, la destra il MSI. Gli altri settori restano senza partito e non entrano nel conteggio. Gli oratori che il corpus registra solo con la coalizione (Polo, Ulivo, Casa delle libertà…) sono stati assegnati al gruppo che li applaude più spesso, con alcune correzioni manuali.</p>
+
+    <h3>Che cos'è un litigio</h3>
+    <p>Nel grafico finale ogni punto è una reazione ostile (proteste, commenti, rumori, interruzioni, grida, apostrofi) di un partito della maggioranza durante l'intervento di un alleato. La maggioranza è quella del governo in carica il giorno della seduta, compresi i partiti che lo sostenevano dall'esterno, come monarchici e MSI con il governo Zoli. Sono esclusi gli interventi con oratore di attribuzione dubbia, per esempio quando il testo cita l'oratore in terza persona o contiene il nome di un altro deputato, e le reazioni a cui partecipa anche il partito dell'oratore, perché in quei casi il bersaglio è probabilmente qualcun altro.</p>
+
+    <h3>I limiti</h3>
+    <p>Fino agli anni Ottanta molte reazioni sono annotate solo per settore dell'aula («proteste al centro», «rumori a sinistra») e il partito che reagisce è dedotto dal settore: è il caso di <span id="n-settore"></span> litigi su <span id="n-tot"></span>, la cui attribuzione è più incerta di quella dei litigi in cui il resoconto nomina un gruppo o un deputato. La densità dei punti dipende anche da come gli stenografi annotavano le reazioni, che cambia nel tempo: dagli anni Novanta, per esempio, rumori e interruzioni si annotano molto meno. Il corpus si ferma alla XVIII legislatura: per la Camera di oggi l'emiciclo usa i seggi delle elezioni del 2022.</p>
+
+    <h3>Le immagini</h3>
+    <p>Foto e loghi vengono da Wikimedia Commons; autori e licenze sono indicati sotto ogni scena.</p>
+  </div>
 </footer>
 <div class="tip" id="tip" role="status"></div>
 
@@ -235,6 +278,8 @@ const SCENE = [
   { data: "1958-03-14", oratore: "Roberti", governo: "Zoli", titolo: "L'alleato che se ne va",
     contesto: "Il monocolore di Adone Zoli si regge anche sui voti del Movimento sociale. A fine legislatura si vota una legge che l'MSI considera una sanzione contro di sé.",
     lite: ["MSI", "DC"],
+    // commento al resoconto, dopo la scena (l'emiciclo resta su questa scena)
+    dopo: ["Il Movimento sociale non aveva ministri: sosteneva il monocolore democristiano dall'esterno, insieme ai monarchici, e Zoli quei voti non li aveva cercati. Nel 1957, quando si rivelarono decisivi per la fiducia, si dimise, ma il presidente della Repubblica respinse le dimissioni. Durante il suo governo i resoconti registrano 28 litigi tra alleati, ==tutti tra la DC e le destre== che la tenevano in piedi."],
     sx: [{ foto: "Giovanni Roberti", nome: "Giovanni Roberti", ruolo: "MSI, appoggio esterno al governo" }],
     dx: [{ logo: "DC_1943", gruppo: "DC", nome: "Democrazia cristiana", ruolo: "e sinistra" }],
     q: "Noi non accettiamo questo provvedimento di ==sanzione fazioso e partigiano==",
@@ -243,8 +288,8 @@ const SCENE = [
   { data: "1970-11-17", oratore: "Castelli", governo: "Colombo", titolo: "Il divorzio divide la maggioranza",
     contesto: "Il centro-sinistra governa unito, ma sul divorzio si spacca: il socialista Loris Fortuna è il primo firmatario della legge, il democristiano Angelo Castelli la combatte.",
     lite: ["DC", "PSI"],
-// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
-    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    // commento al resoconto, dopo la scena (l'emiciclo resta su questa scena)
+    dopo: ["Due settimane dopo, il 1° dicembre 1970, la legge Fortuna-Baslini fu approvata: la DC votò contro, pur restando al governo con i socialisti che l'avevano proposta. La partita si chiuse solo nel 1974, con il referendum in cui ==quasi il 60% degli italiani== scelse di tenere il divorzio."],
     sx: [{ foto: "Angelo Castelli", nome: "Angelo Castelli", ruolo: "DC" }],
     dx: [{ foto: "Loris Fortuna", nome: "Loris Fortuna", ruolo: "PSI" }],
     q: "Onorevole Fortuna, non è legittimo che lei in quest'aula adoperi i linguaggi ovattati e fuori operi ==contro la libertà del Parlamento==.",
@@ -252,8 +297,8 @@ const SCENE = [
   { data: "1971-07-15", oratore: "Frasca", governo: "Colombo", titolo: "Reggio Calabria",
     contesto: "Dopo la rivolta di Reggio Calabria, il socialista Salvatore Frasca accusa la DC calabrese, alleata di governo, di connivenza con la destra monarchica e fascista.",
     lite: ["PSI", "DC"],
-// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
-    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    // commento al resoconto, dopo la scena (l'emiciclo resta su questa scena)
+    dopo: ["Questa volta la lite non nasce da un voto ma da un territorio: la rivolta per la scelta del capoluogo aveva tenuto Reggio in piazza per mesi, e lo scontro tra socialisti e democristiani calabresi arrivò fino a Montecitorio. Di quella seduta il resoconto conserva una sola reazione, «vive proteste al centro»: ==gli stenografi annotano chi protesta, non cosa dice==."],
     sx: [{ foto: "Salvatore Frasca", nome: "Salvatore Frasca", ruolo: "PSI" }],
     dx: [{ logo: "DC_1968", gruppo: "DC", nome: "Democrazia cristiana", ruolo: "" }],
     q: "Ma sia anche chiaro che, se profonde sono le responsabilità dei pubblici poteri, egualmente forti sono ==le responsabilità della democrazia cristiana calabrese==.",
@@ -261,8 +306,8 @@ const SCENE = [
   { data: "1994-07-21", oratore: "Castellaneta", governo: "Berlusconi I", titolo: "«Berlusca, state zitti!»",
     contesto: "Due mesi dopo la nascita del primo governo Berlusconi, un deputato leghista ricorda agli alleati di Forza Italia da dove vengono.",
     lite: ["LEGA", "FI"],
-// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
-    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    // commento al resoconto, dopo la scena (l'emiciclo resta su questa scena)
+    dopo: ["Nelle stesse settimane il decreto Biondi, che limitava la custodia cautelare anche per i reati di corruzione, aveva messo Lega e Alleanza nazionale contro Forza Italia, e il governo aveva dovuto ritirarlo. Il primo governo Berlusconi è quello in cui gli alleati litigano più spesso: ==51 litigi in poco più di otto mesi==, circa 74 all'anno."],
     sx: [{ foto: "Sergio Castellaneta", nome: "Sergio Castellaneta", ruolo: "Lega Nord" }],
     dx: [{ logo: "FI_1994", gruppo: "FI", nome: "Forza Italia", ruolo: "il partito di Berlusconi" }],
     q: "Quando noi eravamo nelle piazze, e facevamo propaganda contro i ladri di Stato a favore di mani pulite, voi eravate nei salotti di Berlusconi, ==complice di quel regime di ladri==.",
@@ -271,8 +316,8 @@ const SCENE = [
   { data: "1994-12-21", oratore: "Bossi", governo: "Berlusconi I", titolo: "La Lega toglie la fiducia",
     contesto: "Cinque mesi dopo, Umberto Bossi presenta in aula la mozione con cui la Lega fa cadere il governo di cui fa parte.",
     lite: ["LEGA", "FI", "AN", "UDC"],
-// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
-    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    // commento al resoconto, dopo la scena (l'emiciclo resta su questa scena)
+    dopo: ["Quel giorno i resoconti registrano 17 litigi tra alleati, 11 dei quali durante il discorso di Bossi. Il giorno dopo, il 22 dicembre, Berlusconi ==si dimise prima del voto== sulle mozioni di sfiducia. La Lega tornerà al governo con lui nel 2001."],
     sx: [{ foto: "Umberto Bossi", nome: "Umberto Bossi", ruolo: "Lega Nord" }],
     dx: [{ logo: "FI_1994", gruppo: "FI", nome: "Forza Italia, AN, CCD", ruolo: "gli alleati" }, { gruppo: "AN" }, { logo: "CCD", gruppo: "CCD" }],
     q: "La Lega, onorevole Presidente, ==le toglie la fiducia!==",
@@ -280,8 +325,8 @@ const SCENE = [
   { data: "2003-07-10", oratore: "Cè", governo: "Berlusconi II", titolo: "«È vero!»",
     contesto: "Nella Casa delle libertà le liti in aula sono rare. Ma su una proposta di legge che la Lega è l'unica a combattere, il leghista Alessandro Cè si rivolge agli alleati.",
     lite: ["LEGA", "FI"],
-// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
-    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    // commento al resoconto, dopo la scena (l'emiciclo resta su questa scena)
+    dopo: ["Il secondo governo Berlusconi durò 1.412 giorni, il più lungo della Repubblica fino a quello di Giorgia Meloni. In quasi quattro anni i litigi tra alleati sono 86, circa 22 all'anno, ==meno di un terzo del ritmo del 1994==. E in più della metà dei casi c'è di mezzo la Lega."],
     sx: [{ foto: "Alessandro Cè", nome: "Alessandro Cè", ruolo: "Lega Nord" }],
     dx: [{ logo: "FI_1994", gruppo: "FI", nome: "Forza Italia", ruolo: "" }],
     q: "Abbiamo addirittura i colleghi della Casa delle libertà e di Forza Italia che dicono: ==siamo stanchi di sentire la Lega==…",
@@ -290,8 +335,8 @@ const SCENE = [
   { data: "2013-11-20", oratore: "Brunetta", governo: "Letta (con FI)", titolo: "La fine delle larghe intese",
     contesto: "Il governo Letta tiene insieme PD e Popolo della libertà. Pochi giorni prima che Forza Italia lasci la maggioranza, il capogruppo Renato Brunetta accusa l'alleato.",
     lite: ["FI", "PD"],
-// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
-    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    // commento al resoconto, dopo la scena (l'emiciclo resta su questa scena)
+    dopo: ["Sei giorni dopo, il 26 novembre, Forza Italia uscì dalla maggioranza, e il giorno seguente il Senato votò la decadenza di Berlusconi. Nei sette mesi di larghe intese i resoconti contano 11 litigi tra alleati; nei tre mesi successivi, con il Nuovo centrodestra di Alfano rimasto al governo, ==nessuno==."],
     sx: [{ foto: "Renato Brunetta", nome: "Renato Brunetta", ruolo: "Popolo della libertà" }],
     dx: [{ logo: "PD", gruppo: "PD", nome: "Partito democratico", ruolo: "il partito del premier Letta" }],
     q: "…con questa delusione nei confronti del Partito Democratico che ==ha ucciso le larghe intese== con la decisione di votare la decadenza di Silvio Berlusconi…",
@@ -299,8 +344,8 @@ const SCENE = [
   { data: "2021-03-24", oratore: "Scerra", governo: "Draghi", titolo: "«Basta!»",
     contesto: "Nel governo Draghi, Movimento 5 Stelle e Lega tornano alleati dopo la rottura del 2019. Alla vigilia di un Consiglio europeo, un deputato grillino ricorda a Salvini le sue simpatie per Orbán.",
     lite: ["M5S", "LEGA"],
-// paragrafi (segnaposto) prima della scena, centrati sotto l'emiciclo
-    prima: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui, maecenas sed diam eget risus varius blandit."],
+    // commento al resoconto, dopo la scena (l'emiciclo resta su questa scena)
+    dopo: ["Il governo Draghi teneva insieme quasi tutto il Parlamento, e si vede: 98 litigi in venti mesi, il ritmo più alto dopo il primo governo Berlusconi e il quinto De Gasperi. Lo scontro più frequente però non è tra Lega e 5 Stelle, ma ==tra PD e Lega==, 57 volte. Nel governo Conte I, quando Lega e 5 Stelle governavano da soli, i resoconti ne registrano uno solo."],
     sx: [{ foto: "Filippo Scerra", nome: "Filippo Scerra", ruolo: "Movimento 5 Stelle" }],
     dx: [{ logo: "LEGA_2018", gruppo: "Lega", nome: "Lega", ruolo: "il partito di Salvini" }],
     q: "Ben venga per noi, Presidente, se il signor Matteo Salvini, che ==strizzava l'occhio ad Orbán==, mentre bloccava le trattative sul Recovery Fund, adesso abbia improvvisamente cambiato idea…",
@@ -367,7 +412,7 @@ function disegnaTL(sel, opt) {
     .attr("cy", d => vert ? t(d.t) : Math.max(r + 2, base - r - 2 - k.get(d.id) * passo))
     .attr("r", d => evid.has(d.id) ? r * 1.7 : r)
     .attr("fill", "var(--ost)")
-    .attr("opacity", d => !opt.gov || d.governo === opt.gov ? 1 : 0.25)
+    .attr("opacity", d => opt.trova ? (opt.trova(d) ? 1 : 0.12) : !opt.gov || d.governo === opt.gov ? 1 : 0.25)
     .on("pointermove", mostra).on("pointerleave", () => tip.style("opacity", 0));
 }
 
@@ -498,11 +543,9 @@ function chi(dove, gente) {
 // due passi senza litigio: la Camera all'inizio della Repubblica e quella di oggi
 const PASSI = {
   inizio: { data: "1948-05-24", governo: "De Gasperi V", lite: [],
-    // testo segnaposto (prima: «Si parte dal 1948, dalla prima Camera della Repubblica…»)
-    testo: ["Lorem ipsum dolor sit amet, ==consectetur adipiscing elit==. Integer posuere erat a ante venenatis dapibus, posuere velit aliquet. Donec ullamcorper nulla non metus auctor fringilla. Maecenas faucibus mollis interdum, sed posuere consectetur est at lobortis.", "Vestibulum id ligula porta felis euismod semper. Cras mattis consectetur purus sit amet fermentum. Nullam quis risus eget urna mollis ornare vel eu leo. Aenean lacinia bibendum nulla sed consectetur, curabitur blandit tempus porttitor."] },
+    testo: ["Si parte dal 1948, dalla prima Camera della Repubblica. La DC ha da sola la maggioranza assoluta dei seggi, ma De Gasperi governa lo stesso con liberali, repubblicani e socialdemocratici. E gli alleati litigano subito: durante il quinto governo De Gasperi i resoconti registrano ==121 litigi==, più che in qualsiasi altro governo."] },
   oggi: { data: "2022-10-13", governo: "Meloni", maggioranza: "FDI LEGA FI NM", lite: [], oggi: true,
-    // testo segnaposto (prima: «E oggi? La Camera eletta nel 2022 ha 400 seggi invece di 630…»)
-    testo: ["Etiam porta sem ==malesuada magna mollis euismod==. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.", "Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Sed posuere consectetur est at lobortis."] },
+    testo: ["E oggi? La Camera eletta nel 2022 ha ==400 seggi invece di 630== e una maggioranza di quattro partiti: Fratelli d'Italia, Lega, Forza Italia e Noi moderati.", "I resoconti analizzati si fermano all'estate del 2022: per sapere se anche gli alleati del governo Meloni litigano in aula bisognerà aspettare la fine della legislatura."] },
 };
 const passo = nome => main.append("section").attr("class", "passo").attr("data-passo", nome)
   .call(sec => PASSI[nome].testo.forEach(t => scrivi(sec.append("p"), t)));
@@ -514,7 +557,7 @@ SCENE.forEach((s, i) => {
     .call(sec => s.prima.forEach(t => scrivi(sec.append("p"), t)));
   const sc = main.append("section").attr("class", "scena" + (DURATA ? " anima" : "")).attr("data-i", i);
   const tx = sc.append("div").attr("class", "scena-testo");
-  tx.append("div").attr("class", "data").text(`Scena ${i + 1} di ${SCENE.length} · ${itFmt("%e %B %Y")(parse(s.data))} · governo ${s.governo.replace(" (con FI)", "")}`);
+  tx.append("div").attr("class", "data").text(`${itFmt("%e %B %Y")(parse(s.data))} · governo ${s.governo.replace(" (con FI)", "")}`);
   tx.append("h2").text(s.titolo);
   // chi governa insieme: i partiti in lite in arancione
   const A = statoAula(s), gov = tx.append("div").attr("class", "al-governo");
@@ -553,14 +596,16 @@ SCENE.forEach((s, i) => {
     c.append("span").text(` durante il governo ${g.governo.replace(" (con FI)", "")}`);
   });
   mini.append("svg").attr("role", "img").attr("aria-label", `Litigi tra alleati durante il governo ${g.governo}`);
+  // commento al resoconto: l'emiciclo resta sulla Camera di questa scena
+  if (s.dopo) main.append("section").attr("class", "passo").attr("data-scena", i)
+    .call(sec => s.dopo.forEach(t => scrivi(sec.append("p"), t)));
 });
 
 passo("oggi");
 
-// tutte le timeline: le due complete (inizio e fine) e quelle delle scene
+// tutte le timeline: quella completa in fondo e quelle delle scene
 function disegnaTutte() {
   const vert = matchMedia("(min-width: 900px)").matches;
-  disegnaTL(d3.select("#tl-inizio svg"), { dominio: dominioTutto });
   disegnaFine();
   d3.selectAll(".tl-conta").text(`${L.length.toLocaleString("it-IT")} litigi tra alleati`);
   d3.selectAll(".scena").each(function () {
@@ -582,7 +627,7 @@ function disegnaFine() {
   const base = d3.scaleTime().domain(dominioTutto).range([4, W - 4]);
   zoomFine.extent([[0, 0], [W, H]]).translateExtent([[0, 0], [W, H]]);
   const dominio = zt.rescaleX(base).domain();
-  disegnaTL(svgFine, { dominio });
+  disegnaTL(svgFine, { dominio, trova });
   d3.select("#zoom-stato").text(zt.k > 1.01 ? `${itFmt("%Y")(dominio[0])}–${itFmt("%Y")(dominio[1])}` : "");
   d3.select("#zoom-tutto").property("disabled", zt.k <= 1.01);
 }
@@ -594,6 +639,99 @@ const conMoto = () => DURATA ? svgFine.transition().duration(DURATA) : svgFine;
 d3.select("#zoom-piu").on("click", () => conMoto().call(zoomFine.scaleBy, 2));
 d3.select("#zoom-meno").on("click", () => conMoto().call(zoomFine.scaleBy, 0.5));
 d3.select("#zoom-tutto").on("click", () => conMoto().call(zoomFine.transform, d3.zoomIdentity));
+
+// ---------------------------------------------------------------- ricerca nella timeline finale
+// un anno (es. 1994) ingrandisce su quell'anno; altrimenti cerca la parola all'inizio di una parola
+// in oratore, partiti (sigla e nome), governo e annotazione, senza badare a maiuscole e accenti
+let trova = null;
+const norm = s => (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const testoCerca = new Map(L.map(d => [d.id,
+  norm([d.oratore, d.chi, d.chi_nome, d.a_chi, d.a_chi_nome, "governo " + d.governo, d.annotazione].join(" | "))]));
+const voci = [...new Set([
+  ...L.map(d => d.oratore).filter(o => o && o !== "Government"),
+  ...L.flatMap(d => [d.chi_nome, d.a_chi_nome]),
+])].sort((a, b) => a.localeCompare(b, "it"));
+d3.select("#cerca-voci").selectAll("option").data(voci).join("option").attr("value", v => v);
+
+function cerca(q) {
+  q = q.trim();
+  const anno = /^(19[4-9]\d|20[0-2]\d)$/.test(q) ? q : null;
+  if (!q) trova = null;
+  else if (anno) trova = d => d.data.startsWith(anno);
+  else {
+    const re = new RegExp("(^|[^a-z0-9])" + norm(q).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    trova = d => re.test(testoCerca.get(d.id));
+  }
+  const n = trova ? L.filter(trova).length : 0;
+  d3.select("#cerca-esito").html("").call(s => {
+    if (!q) return;
+    if (!n) return s.text("nessun litigio trovato");
+    s.append("b").text(n.toLocaleString("it-IT"));
+    s.append("span").text(` ${n === 1 ? "litigio" : "litigi"} su ${L.length.toLocaleString("it-IT")}`);
+  });
+  if (anno) {
+    // ingrandisce sull'anno cercato (con un mese di margine per parte)
+    const W = svgFine.node().clientWidth || 900;
+    const base = d3.scaleTime().domain(dominioTutto).range([4, W - 4]);
+    const a = base(new Date(+anno - 1, 11, 1)), b = base(new Date(+anno + 1, 1, 1));
+    const k = Math.min(60, (W - 8) / (b - a));
+    conMoto().call(zoomFine.transform, d3.zoomIdentity.translate(4 - k * a, 0).scale(k));
+    zoomAnno = true;
+  } else if (zoomAnno) {
+    // dopo un anno, cercando altro si torna a vedere tutto il periodo
+    zoomAnno = false;
+    conMoto().call(zoomFine.transform, d3.zoomIdentity);
+  } else disegnaFine();
+}
+let zoomAnno = false;
+let attesa;
+d3.select("#cerca").on("input", e => { clearTimeout(attesa); attesa = setTimeout(() => cerca(e.target.value), 150); });
+// gli esempi nel paragrafo di chiusura riempiono la ricerca
+d3.selectAll("[data-cerca]").on("click keydown", function (e) {
+  if (e.type === "keydown" && e.key !== "Enter") return;
+  e.preventDefault();
+  document.getElementById("cerca").value = this.dataset.cerca;
+  cerca(this.dataset.cerca);
+  document.getElementById("tl-fine").scrollIntoView({ behavior: DURATA ? "smooth" : "auto", block: "center" });
+});
+
+// ---------------------------------------------------------------- la timeline finale si riempie
+// quando la si raggiunge, i pallini già visti nelle timeline delle scene scendono al loro posto
+// (scena dopo scena); poi compaiono tutti gli altri, da sinistra a destra
+let riempita = !DURATA;
+svgFine.classed("vuota", !riempita);
+function riempi() {
+  riempita = true;
+  const dove = svgFine.node().getBoundingClientRect();
+  const visti = new Map();
+  d3.selectAll(".mini svg circle").each(function (d) {
+    if (visti.has(d.id)) return;
+    const r = this.getBoundingClientRect();
+    visti.set(d.id, { x: r.x + r.width / 2, y: r.y + r.height / 2, scena: +this.closest(".scena").dataset.i });
+  });
+  const volo = 1100, primaFine = SCENE.length * 140 + 300 + volo;
+  svgFine.style("overflow", "visible").classed("vuota", false);
+  svgFine.selectAll("circle").each(function (d) {
+    const c = d3.select(this), x = +c.attr("cx"), y = +c.attr("cy"), da = visti.get(d.id);
+    if (da) {
+      // le scene sono più in alto, fuori dallo schermo: i pallini partono dal bordo superiore
+      const dx = da.x - dove.x - x, dy = Math.max(da.y, -20) - dove.y - y;
+      c.attr("transform", `translate(${dx},${dy})`)
+        .transition().delay(da.scena * 140 + Math.random() * 300).duration(volo).ease(d3.easeCubicInOut)
+        .attr("transform", "translate(0,0)");
+    } else {
+      const r = c.attr("r");
+      c.attr("r", 0).transition().delay(primaFine + x / dove.width * 1200).duration(350).attr("r", r);
+    }
+  });
+  setTimeout(() => svgFine.style("overflow", null), primaFine + 1700);
+}
+const obsFine = new IntersectionObserver(es => {
+  if (!es[0].isIntersecting || riempita) return;
+  obsFine.disconnect();
+  riempi();
+}, { threshold: 0.6 });
+if (!riempita) obsFine.observe(svgFine.node());
 
 // ---------------------------------------------------------------- emiciclo in alto
 // segue la scena che si sta leggendo; prima delle scene la Camera del 1948, dopo quella di oggi
@@ -630,7 +768,7 @@ addEventListener("resize", () => { clearTimeout(ridisegno); ridisegno = setTimeo
 const solo = new URLSearchParams(location.search).get("solo");
 if (solo !== null) {
   obs.disconnect();
-  [".apertura", ".intro", "#tl-inizio", ".ponte", "#tl-fine"].forEach(q => document.querySelector(q).remove());
+  [".apertura", ".intro", ".ponte", ".chiusura", "#tl-fine"].forEach(q => document.querySelector(q)?.remove());
   document.querySelectorAll(".passo").forEach(p => p.remove());
   document.querySelectorAll(".scena").forEach((s, k) => { if (k !== +solo - 1) s.remove(); else s.style.minHeight = "auto"; });
   disegnaTutte();
