@@ -73,7 +73,7 @@
 
   /* scene */
   .ponte { max-width: 680px; margin: 0 auto; padding: 32px 16px 8px; color: var(--ink-2); }
-  .scene { max-width: 1100px; margin: 0 auto; padding: 0 16px 6vh; }
+  .scene { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
   /* emiciclo fisso in alto per tutta la durata delle scene */
   /* emiciclo al centro, didascalia e legenda di lato; niente bordo: sfuma nella pagina */
   .aula { position: sticky; top: 0; z-index: 5; background: var(--page); padding: 10px 16px 4px; }
@@ -112,6 +112,10 @@
   /* passi senza scena (Camera del 1948 e di oggi): solo testo */
   /* passi senza scena: paragrafi in colonna centrata, sotto l'emiciclo */
   .passo { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; scroll-margin-top: 250px; }
+  /* due passi di fila (commento a Draghi e Camera di oggi): si susseguono come due paragrafi;
+     sotto la Camera di oggi resta spazio, così l'emiciclo del 2022 si vede prima della chiusura */
+  .passo:has(+ .passo) { min-height: 35vh; justify-content: flex-end; }
+  .passo + .passo { min-height: 50vh; justify-content: flex-start; }
   .passo p, .chiusura p { width: 100%; max-width: 680px; margin: 0 0 1.1em; font-size: 1.1rem; }
   .zoom { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin: 6px 0 2px; }
   .zoom button { font: inherit; font-weight: 600; min-width: 30px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border);
@@ -123,8 +127,8 @@
   .cerca input { font: inherit; color: var(--ink); background: var(--surface); width: min(100%, 340px);
                  padding: 7px 11px; border: 1px solid var(--ink); border-radius: 6px; }
   #cerca-esito b { color: var(--ink); }
-  /* paragrafo di chiusura: stesso respiro dei passi tra le scene, poi subito il grafico */
-  .chiusura { max-width: 712px; margin: 0 auto; padding: 9vh 16px 0; }
+  /* paragrafo di chiusura: segue la Camera di oggi alla stessa distanza degli altri paragrafi, poi subito il grafico */
+  .chiusura { max-width: 712px; margin: 0 auto; padding: 0 16px; }
   .chiusura [data-cerca] { cursor: pointer; }
   /* prima che arrivino dalle scene, i pallini della timeline finale non si vedono */
   #tl-fine svg.vuota circle { visibility: hidden; }
@@ -546,7 +550,7 @@ const PASSI = {
   inizio: { data: "1948-05-24", governo: "De Gasperi V", lite: [],
     testo: ["Si parte dal 1948, dalla prima Camera della Repubblica. La DC ha da sola la maggioranza assoluta dei seggi, ma De Gasperi governa lo stesso con liberali, repubblicani e socialdemocratici. E gli alleati litigano subito: durante il quinto governo De Gasperi i resoconti registrano ==121 litigi==, più che in qualsiasi altro governo."] },
   oggi: { data: "2022-10-13", governo: "Meloni", maggioranza: "FDI LEGA FI NM", lite: [], oggi: true,
-    testo: ["E oggi? La Camera eletta nel 2022 ha ==400 seggi invece di 630== e una maggioranza di quattro partiti: Fratelli d'Italia, Lega, Forza Italia e Noi moderati.", "I resoconti analizzati si fermano all'estate del 2022: per sapere se anche gli alleati del governo Meloni litigano in aula bisognerà aspettare la fine della legislatura."] },
+    testo: ["E oggi? La Camera eletta nel 2022 ha ==400 seggi invece di 630== e una maggioranza di quattro partiti: Fratelli d'Italia, Lega, Forza Italia e Noi moderati. I resoconti analizzati si fermano all'estate del 2022: per sapere se anche gli alleati del governo Meloni litigano in aula bisognerà aspettare la fine della legislatura."] },
 };
 const passo = nome => main.append("section").attr("class", "passo").attr("data-passo", nome)
   .call(sec => PASSI[nome].testo.forEach(t => scrivi(sec.append("p"), t)));
