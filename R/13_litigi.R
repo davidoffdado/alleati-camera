@@ -74,3 +74,4 @@ loghi <- setNames(lapply(seq_len(nrow(lg)), function(i) as.list(lg[i, .(locale, 
 tpl <- sub("/*__LOGHI__*/null", toJSON(loghi, auto_unbox = TRUE), tpl, fixed = TRUE)
 con <- file("viz/litigi.html", encoding = "UTF-8"); writeLines(enc2utf8(tpl), con, useBytes = TRUE); close(con)
 cat("scritto viz/litigi.html con", length(foto), "foto e", length(loghi), "loghi\n")
+
