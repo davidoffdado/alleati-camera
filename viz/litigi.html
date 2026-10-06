@@ -195,7 +195,7 @@
 <section class="apertura">
   <p>La storia della Repubblica italiana è caratterizzata da una <mark class="pennarello">forte instabilità degli esecutivi</mark>: in media, un governo dura poco più di un anno. L'attuale esecutivo in carica, guidato da Giorgia Meloni, è il più longevo, avendo superato i 1412 giorni del secondo governo di Silvio Berlusconi; all'estremo opposto c'è Amintore Fanfani, che nel 1954 guidò un governo durato appena 22 giorni.</p>
   <p>Alla base di molte crisi di governo c'è la <mark class="pennarello">frammentazione partitica</mark>: un numero elevato di partiti costringe a formare coalizioni complesse e fragili, che non sempre riescono a reggere il peso del potere. Correnti interne e distanze ideologiche tra gli alleati aprono crepe nella maggioranza, finché l'alleanza non si rompe e il governo cade.</p>
-  <p>Partendo da queste informazioni, ci siamo posti una domanda: in Italia, <mark class="pennarello">gli alleati di governo vanno d'accordo?</mark></p>
+  <p>Partendo da queste informazioni, mi sono posto una domanda: in Italia, <mark class="pennarello">gli alleati di governo vanno d'accordo?</mark></p>
 </section>
 
 <header class="intro">
@@ -203,7 +203,7 @@
   <p>Governano insieme e votano insieme la fiducia, ma in aula si contestano, tra frecciatine e accuse reciproche. Ripercorrere la storia della Camera dei Deputati, dal 1948 al 2022, ci mostra <mark class="pennarello" id="n-litigi">1047 </mark> eventi in cui un partito della maggioranza ha protestato, rumoreggiato o interrotto un proprio alleato. Andiamo a vederne alcuni.</p>
 </header>
 
-<p class="ponte">Questo è l'emiciclo della Camera e vi mostrerà, mano a mano che scorrete l'articolo, com'era composta in quel momento storico e chi governava insieme. Si parte dalla Camera eletta nel 1948 e si arriva a quella eletta nel 2022.</p>
+<p class="ponte">Questo è l'emiciclo della Camera e ti mostrerà, mano a mano che scorri l'articolo, com'era composta in quel momento storico e chi governava insieme. Si parte dalla Camera eletta nel 1948 e si arriva a quella eletta nel 2022.</p>
 
 <div class="storia">
   <div class="aula" id="aula" aria-label="Composizione della Camera">
@@ -224,13 +224,13 @@
 </div>
 
 <section class="chiusura">
-  <p>Quelle viste sopra sono solamente alcune delle volte in cui gli alleati se le sono date in aula, ma nel grafico successivo ci sono tutte quelle che abbiamo rintracciato: provate a cercare un politico, un partito o un anno e passate sopra ogni evento per leggere cosa annotarono gli stenografi.</p>
+  <p>Quelle viste sopra sono solamente alcune delle volte in cui gli alleati se le sono date in aula, ma nel grafico successivo ci sono tutte quelle che ho rintracciato: prova a cercare un politico, un partito o un anno e passa sopra ogni evento per leggere cosa annotarono gli stenografi.</p>
 </section>
 <div class="tl" id="tl-fine" aria-label="Timeline completa dei litigi tra alleati">
   <div class="tl-in">
     <div class="tl-head"><span><b>Tutti i litigi tra alleati</b> · 1948–2022</span><span class="tl-conta"></span></div>
     <div class="cerca">
-      <input type="search" id="cerca" list="cerca-voci" placeholder="Cercate un politico, un partito o un anno" aria-label="Cerca un politico, un partito o un anno" autocomplete="off">
+      <input type="search" id="cerca" list="cerca-voci" placeholder="Cerca un politico, un partito o un anno" aria-label="Cerca un politico, un partito o un anno" autocomplete="off">
       <datalist id="cerca-voci"></datalist>
       <span id="cerca-esito" role="status"></span>
     </div>
@@ -239,7 +239,7 @@
       <button type="button" id="zoom-meno" aria-label="Riduci">−</button>
       <button type="button" id="zoom-tutto" disabled>Tutto</button>
       <span id="zoom-stato"></span>
-      <span>trascinate per spostarvi nel tempo · ctrl + rotella o due dita per ingrandire</span>
+      <span>trascina per spostarti nel tempo · ctrl + rotella o due dita per ingrandire</span>
     </div>
     <svg></svg>
   </div>
@@ -252,9 +252,9 @@
     <h3>Le fonti</h3>
     <p>I dati vengono dall'<b>ItaParlCorpus</b>, la raccolta dei resoconti stenografici delle sedute della Camera dei deputati dal 1948 al 2022 costruita da Joshua Cova (Max Planck Institute for the Study of Societies): oltre 2,4 milioni di interventi, ognuno con data, oratore e gruppo parlamentare. Il corpus è descritto nell'articolo <a href="https://www.cambridge.org/core/journals/italian-political-science-review-rivista-italiana-di-scienza-politica/article/new-database-for-italian-parliamentary-speeches-introducing-the-itaparlcorpus-dataset/B2B70F700901C6A8C7D4F2D51590AEDE" target="_blank" rel="noopener">A new database for Italian parliamentary speeches: introducing the ItaParlCorpus dataset</a>, pubblicato nel 2025 sull'Italian Political Science Review, ed è scaricabile liberamente da <a href="https://doi.org/10.7910/DVN/KUARWD" target="_blank" rel="noopener">Harvard Dataverse</a>. Le citazioni delle scene si possono ritrovare nei resoconti pubblicati sul <a href="https://www.camera.it" target="_blank" rel="noopener">sito della Camera</a>.</p>
 
-    <h3>Come abbiamo trovato le reazioni</h3>
-    <p>Nei resoconti gli stenografi annotano tra parentesi quello che succede in aula: «(Vivissime proteste dei deputati del gruppo di Forza Italia)», «(Proteste al centro)», «(Proteste del deputato Fortuna)». Abbiamo estratto tutte le annotazioni tra parentesi, circa 1,2 milioni, le abbiamo divise in singoli eventi e le abbiamo classificate per tipo (applausi, proteste, commenti, rumori, interruzioni…) con regole testuali, correggendo gli errori di riconoscimento del testo più frequenti nei resoconti più vecchi.</p>
-    <p>Per ogni evento abbiamo poi individuato <b>chi reagisce</b>, cioè un gruppo, un deputato nominato o un settore dell'aula, e <b>a chi</b>: l'oratore dell'intervento in cui compare l'annotazione. Quando il resoconto indica solo un settore, il partito è stato dedotto soltanto dove la corrispondenza, verificata sugli applausi, è netta: il centro è la DC, l'estrema sinistra il PCI e, dalla IV legislatura, la destra il MSI. Gli altri settori restano senza partito e non entrano nel conteggio. Gli oratori che il corpus registra solo con la coalizione (Polo, Ulivo, Casa delle libertà…) sono stati assegnati al gruppo che li applaude più spesso, con alcune correzioni manuali.</p>
+    <h3>Come ho trovato le reazioni</h3>
+    <p>Nei resoconti gli stenografi annotano tra parentesi quello che succede in aula: «(Vivissime proteste dei deputati del gruppo di Forza Italia)», «(Proteste al centro)», «(Proteste del deputato Fortuna)». Ho estratto tutte le annotazioni tra parentesi, circa 1,2 milioni, le ho divise in singoli eventi e le ho classificate per tipo (applausi, proteste, commenti, rumori, interruzioni…) con regole testuali, correggendo gli errori di riconoscimento del testo più frequenti nei resoconti più vecchi.</p>
+    <p>Per ogni evento ho poi individuato <b>chi reagisce</b>, cioè un gruppo, un deputato nominato o un settore dell'aula, e <b>a chi</b>: l'oratore dell'intervento in cui compare l'annotazione. Quando il resoconto indica solo un settore, il partito è stato dedotto soltanto dove la corrispondenza, verificata sugli applausi, è netta: il centro è la DC, l'estrema sinistra il PCI e, dalla IV legislatura, la destra il MSI. Gli altri settori restano senza partito e non entrano nel conteggio. Gli oratori che il corpus registra solo con la coalizione (Polo, Ulivo, Casa delle libertà…) sono stati assegnati al gruppo che li applaude più spesso, con alcune correzioni manuali.</p>
 
     <h3>Che cos'è un litigio</h3>
     <p>Nel grafico finale ogni punto è una reazione ostile (proteste, commenti, rumori, interruzioni, grida, apostrofi) di un partito della maggioranza durante l'intervento di un alleato. La maggioranza è quella del governo in carica il giorno della seduta, compresi i partiti che lo sostenevano dall'esterno, come monarchici e MSI con il governo Zoli. Sono esclusi gli interventi con oratore di attribuzione dubbia, per esempio quando il testo cita l'oratore in terza persona o contiene il nome di un altro deputato, e le reazioni a cui partecipa anche il partito dell'oratore, perché in quei casi il bersaglio è probabilmente qualcun altro.</p>
