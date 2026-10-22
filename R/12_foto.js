@@ -46,7 +46,7 @@ const persone = process.argv.length > 2 ? process.argv.slice(2) : tutte;
       const m = ii.extmetadata || {};
       const lic = pulisci(m.LicenseShortName?.value), url = m.LicenseUrl?.value || "";
       // "Unknown author" sulle foto dell'archivio della Camera: la fonte è nel campo Credit
-      const aut = [pulisci(m.Artist?.value), pulisci(m.Credit?.value)].filter(x => x && !/^unknown author/i.test(x)).join(" — ") || "autore sconosciuto";
+      const aut = [pulisci(m.Artist?.value), pulisci(m.Credit?.value)].filter(x => x && !/^unknown author/i.test(x)).join(" - ") || "autore sconosciuto";
       if (!libera(lic)) { righe.push([p, descr, file, lic, aut, url, ii.descriptionurl, "", "licenza non libera: esclusa"]); continue; }
       const ext = path.extname(new URL(ii.thumburl).pathname) || ".jpg";
       const loc = path.join(OUT, p.toLowerCase().replace(/[^a-zà-ù]+/g, "_") + ext);

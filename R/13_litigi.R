@@ -59,7 +59,9 @@ ft[, locale := sub("^viz/", "", locale)]   # percorso relativo alla pagina
 # autore leggibile: le foto dell'archivio di Camera e Senato hanno come "autore" un URL
 ft[, autore := fcase(stri_detect_regex(autore, "camera\\.it"), "Camera dei deputati",
                      stri_detect_regex(autore, "senato\\.it"), "Senato della Repubblica",
-                     default = stri_trim_both(stri_replace_all_regex(autore, "\\s*—?\\s*https?://\\S+|File:\\S+|\\S+\\.jpg:?", "")))]
+                     default = stri_trim_both(stri_replace_all_regex(autore, "\\s*[—-]?\\s*https?://\\S+|File:\\S+|\\S+\\.jpg:?", "")))]
+# niente trattini lunghi; e via il trattino rimasto in fondo dopo aver tolto link e nomi di file
+ft[, autore := stri_trim_both(stri_replace_all_regex(stri_replace_all_fixed(autore, "—", "-"), "\\s*-\\s*$", ""))]
 ft[autore == "" | is.na(autore), autore := "autore sconosciuto"]
 foto <- setNames(lapply(seq_len(nrow(ft)), function(i) as.list(ft[i, .(persona, locale, licenza, autore, pagina_commons)])), ft$persona)
 
